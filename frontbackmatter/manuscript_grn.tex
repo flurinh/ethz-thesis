@@ -1,0 +1,531 @@
+%*******************************************************
+% Manuscript: A Generic Residue-Numbering system
+% for Microbial Rhodopsins (MO numbering system)
+%*******************************************************
+
+\pdfbookmark[1]{Manuscript: MO numbering system}{manuscript-grn}
+\chapter*{A Generic Residue-Numbering system for Microbial Rhodopsins}
+
+\begin{center}
+{\small
+Flurin S.\ Hidber\textsuperscript{1,2,10,\#},
+Seiya Tajima\textsuperscript{3,4,\#},
+Koichiro E.\ Kishi\textsuperscript{3,4,\#},
+Yosuke Nishimura\textsuperscript{5,6},
+Susumu Yoshizawa\textsuperscript{5,7,8},
+Xavier Deupi\textsuperscript{1,9,10,*},
+Hideaki E.\ Kato\textsuperscript{3,4,11,12,13,*}
+}
+\end{center}
+
+{\footnotesize\noindent
+\textsuperscript{1}~Condensed Matter Theory Group, PSI Center for Scientific Computing, Theory, and Data, 5232 Villigen-PSI, Switzerland\\
+\textsuperscript{2}~Department of Biology, ETH Z\"urich, Z\"urich, Switzerland\\
+\textsuperscript{3}~Research Center for Advanced Science and Technology, The University of Tokyo, Meguro, Tokyo, Japan.\\
+\textsuperscript{4}~Department of Life Sciences, School of Arts and Sciences, The University of Tokyo, Meguro, Tokyo, Japan.\\
+\textsuperscript{5}~Atmosphere and Ocean Research Institute, The University of Tokyo, Chiba, Japan\\
+\textsuperscript{6}~Research Center for Bioscience and Nanoscience (CeBN), Research and Development Center for Marine Biosciences, Japan Agency for Marine-Earth Science and Technology (JAMSTEC), Kanagawa, Japan\\
+\textsuperscript{7}~Graduate School of Frontier Sciences, The University of Tokyo, Chiba, Japan\\
+\textsuperscript{8}~Collaborative Research Institute for Innovative Microbiology, The University of Tokyo, Tokyo, Japan\\
+\textsuperscript{9}~Laboratory of Biomolecular Research, PSI Center for Life Sciences, 5232 Villigen-PSI, Switzerland\\
+\textsuperscript{10}~Swiss Institute of Bioinformatics (SIB), Lausanne, Switzerland\\
+\textsuperscript{11}~Department of Biological Sciences, Graduate School of Science, The University of Tokyo, Bunkyo, Tokyo, Japan.\\
+\textsuperscript{12}~FOREST, Japan Science and Technology Agency, Kawaguchi, Saitama, Japan.\\
+\textsuperscript{13}~CREST, Japan Science and Technology Agency, Kawaguchi, Saitama, Japan.\\[0.5em]
+\textsuperscript{\#}~Flurin S.\ Hidber, Seiya Tajima, and Koichiro E.\ Kishi contributed equally to this work.\\
+*Correspondence: Xavier Deupi (xavier.deupi@psi.ch) and Hideaki E.\ Kato (c-hekato@g.ecc.u-tokyo.ac.jp).
+}
+
+\bigskip
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Abstract}{ms-grn-abstract}
+\section*{Abstract}
+%-------------------------------------------------------
+
+Microbial rhodopsins are photoreceptors with a seven-transmembrane architecture that use the chromophore retinal---a vitamin~A derivative---to convert light absorption into ion transport, signaling, and enzymatic activity. Since their discovery half a century ago, genome sequencing has uncovered thousands of these proteins across archaea, bacteria, eukaryotes, and viruses, revealing a diverse functional repertoire that includes ion pumps and channels, transducer activators, and enzyme/channel regulators. Although the structure of the seven-transmembrane bundle and the retinal-binding pocket is highly conserved, the sequence identity across major classes is low. This low sequence identity, combined with the rapidly expanding number of microbial rhodopsins identified by metagenomics, makes direct comparisons across the superfamily increasingly difficult. Here, we introduce a generic residue-numbering system for microbial rhodopsins (MO numbering system), a structure-based framework anchored to the retinal-binding pocket that enables consistent residue comparison across even the most divergent family members. Analyzing 129 structures and approximately 40,000 sequences, we demonstrate its utility by analyzing sequence--structure--function relationships across the superfamily, including previously uncharacterized members. The MO numbering system provides a common language for organizing the growing repertoire of microbial rhodopsins, integrating structural, spectroscopic, and electrophysiological data, and engineering next-generation optogenetic tools.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Introduction}{ms-grn-introduction}
+\section*{Introduction}
+%-------------------------------------------------------
+
+The microbial rhodopsin superfamily comprises light-sensitive proteins that use the chromophore retinal---a vitamin~A derivative---to convert photon absorption into concerted cellular events. Since the discovery of the proton pump bacteriorhodopsin in \textit{Halobacterium salinarum} (\textit{Hs}BR) over fifty years ago\textsuperscript{1}, microbial rhodopsins have revealed a striking diversity of functions. These proteins are found across all domains of life---Archaea, Bacteria, and Eukaryota---and viruses\textsuperscript{2, 3, 4} functioning as proton, chloride, or sodium pumps, cation and anion channels, activators of downstream signal transducers, and even as enzyme/channel/transporter regulators. Their photochemical properties are equally varied: while in most microbial rhodopsins light isomerizes all-\textit{trans} retinal to the 13-\textit{cis} form, some produce 9-\textit{cis} or 11-\textit{cis} isomers as photoproducts\textsuperscript{2, 5, 6, 7}.
+
+Despite this functional and photochemical diversity, all microbial rhodopsins share a core architecture: a tight bundle of seven transmembrane helices (TMs) surrounding the retinal-binding pocket, with retinal bound via a Schiff base to a conserved lysine on TM7. Some families form oligomers ranging from dimers to hexamers\textsuperscript{6, 8, 9, 10, 11, 12, 13, 14}, while others have an additional TM or an inverted membrane topology\textsuperscript{6, 10, 15, 16}. Remarkably, this structural conservation persists even though sequence identity between major families can be as low as 10--12\%\textsuperscript{17}, with a nearly identical orientation of retinal in the binding pocket. Such conservation despite extreme sequence divergence\textsuperscript{18} suggests powerful evolutionary constraints on the architecture required for retinal binding and photoisomerization.
+
+Microbial rhodopsins are often classified, annotated, and compared by tracking characteristic sequence motifs that are coupled to their function. However, the high sequence variability within the family complicates the analysis of large datasets obtained in metagenomics studies, particularly the comparison of distant subfamilies. Researchers in the field often resort to developing \textit{ad hoc} sequence numbering systems using a reference rhodopsin, such as \textit{Hs}BR, channelrhodopsin-2 from \textit{Chlamydomonas reinhardtii} (CrChR2, the most common optogenetics tool)\textsuperscript{19}, or C1C2 also from \textit{Chlamydomonas reinhardtii} (the first channelrhodopsin structure, a chimera between channelrhodopsin-1 and 2)\textsuperscript{11}. This makes it challenging to recognize equivalent positions and conserved motifs in different rhodopsins throughout the scientific literature. Other fields have overcome this hurdle by adopting generic residue-numbering (GRN) systems. A prime example is the field of G~protein-coupled receptors (GPCRs), in which the Ballesteros--Weinstein GRN system\textsuperscript{20}---or its descendant GPCRdb system\textsuperscript{21}---assign a unique index to equivalent positions in different proteins. Similar systems developed for microbial rhodopsins are limited to a few specific families\textsuperscript{22} and cannot be applied across the entire superfamily.
+
+In this work, we develop a GRN system for microbial opsins (MO numbering system) based on the structure of the retinal-binding site, rather than on sequence conservation. This numbering system provides a consistent framework for comparing residues across even the most divergent rhodopsins. Using a dataset of 129 structures and approximately 40,000 sequences, we demonstrate its utility by mapping functionally important residues across ion pumps, channels, and sensory rhodopsins, and by identifying conserved sequence signatures in both characterized and previously uncharacterized rhodopsin families.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Results}{ms-grn-results}
+\section*{Results}
+%-------------------------------------------------------
+
+\pdfbookmark[3]{Assembly of a dataset of microbial rhodopsin structures}{ms-grn-assembly}
+\subsection*{Assembly of a dataset of microbial rhodopsin structures}
+
+Comparative structural analysis of microbial rhodopsins has been somewhat hindered by limited structural coverage of certain functional classes and taxonomic groups. To address this limitation, we assembled a comprehensive dataset of 129 structures, combining 69 experimentally determined structures and 60 computationally predicted models \textbf{(Fig.\ 1)}. The dataset includes rhodopsins from all domains of life---archaea (27, 21\%), bacteria (42, 33\%), and eukaryota (50, 39\%)---and also includes synthetic variants (5, 4\%) and viral rhodopsins (5, 4\%). Functionally, the dataset spans proton pumps (42, 33\%), cation channels (28, 22\%), regulatory rhodopsins with fused domains (14, 11\%), anion channels (12, 9\%), chloride pumps (12, 9\%), transducer activators (8, 6\%), sodium pumps (6, 5\%), and rhodopsins of undefined function (7, 5\%). Due to biases in available structural databases, proton pumps are overrepresented in the experimentally determined structures (31/69, 45\%). To balance functional coverage, we enriched underrepresented families through predictive structural modeling: enzyme/channel/transporter regulators (12 predictions), cation channels (11), proton pumps (11), anion channels (8), chloride pumps (6), transducer activators (6), sodium pumps (3), and rhodopsins of undefined function (3).
+
+The dataset reflects known taxonomic distributions of rhodopsin functions. Channelrhodopsins---both cation-conducting (23/28) and anion-conducting (10/12)---are concentrated in eukaryotes, consistent with their restriction to algae and related protists\textsuperscript{23}. Similarly, enzyme/channel/transporter regulatory rhodopsins are predominantly eukaryotic (12/14), consistent with enzyme rhodopsins having been identified mostly in fungi, green algae, and choanoflagellates\textsuperscript{10}. Sodium pumps appear exclusively in bacteria (6/6), consistent with their known distribution in marine flavobacteria and related lineages\textsuperscript{24}. Chloride pumps are found in both archaea and bacteria, reflecting independent evolutionary origins in these lineages\textsuperscript{25}. Proton pumps show the broadest distribution across Archaea, Bacteria, and Eukaryota, consistent with ancestral sequence reconstruction studies suggesting that the last common ancestor of microbial rhodopsins functioned as a light-driven proton pump\textsuperscript{26}.
+
+
+\pdfbookmark[3]{Validation of the structural predictions}{ms-grn-validation}
+\subsection*{Validation of the structural predictions}
+
+As nearly half of our dataset consists of predicted models, we first assessed their accuracy using two complementary validation sets of experimental structures: benchmark set~A ($n = 42$), composed of structures deposited before September 2021 (which may have been used in the training of the structure prediction methods), and blind set~B ($n = 27$), composed exclusively of structures deposited after the model training cutoff. We assessed the accuracy of the models by comparing the protein backbone, the retinal-binding pocket, and retinal \textbf{(Supplementary Fig.\ 1)}. The predicted models have high accuracy. Models in benchmark set~A had a mean backbone C$\alpha$ RMSD of $0.61 \pm 0.23$~\AA{}, binding-pocket iRMSD of $0.51 \pm 0.28$~\AA{}, and retinal L-RMSD of $0.40 \pm 0.24$~\AA{}. Models in blind set~B had a mean backbone C$\alpha$ RMSD of $0.80 \pm 0.24$~\AA{}, binding-pocket iRMSD of $0.75 \pm 0.28$~\AA{}, and retinal L-RMSD of $0.62 \pm 0.27$~\AA{}. The errors in blind set~B are consistently higher, but the mean differences between the predicted models and the reference structures remain below 1~\AA{}.
+
+To illustrate the accuracy of the predicted models, we show experimental and predicted structures for six representative rhodopsins spanning different functional classes \textbf{(Fig.\ 2)}. In all cases, the overall fold was accurately reproduced, with loops largely correctly positioned \textbf{(Fig.\ 2a)}. The retinal-binding pocket was also consistently modeled at sub-angstrom precision \textbf{(Fig.\ 2b)}, including accurate handling of unusual 6-\textit{s}-\textit{cis} $\beta$-ionone ring conformations (as observed in the cation channelrhodopsin \textit{Kn}ChR), consistent with the non-G rule\textsuperscript{27, 28, 29}. These results show that current structure prediction methods reliably capture both the global microbial rhodopsin fold and the details of the retinal-binding pocket, supporting the inclusion of predicted structures to increase the diversity of our dataset.
+
+
+\pdfbookmark[3]{Overall structural conservation of the microbial rhodopsin fold}{ms-grn-conservation}
+\subsection*{Overall structural conservation of the microbial rhodopsin fold}
+
+To analyze structural conservation across the dataset, we calculated pairwise RMSDs between C$\alpha$ atoms of the transmembrane helices for all structure pairs. The resulting RMSD matrix \textbf{(Fig.\ 3)} reveals substantial structural conservation across the superfamily. However, sequence identity is low, averaging $21 \pm 9$\% in the TM bundle (min = 7\%) and $19 \pm 9$\% in the full sequence (min = 6\%). Hierarchical clustering of the RMSD matrix identified a single main structural cluster, confirming that microbial rhodopsin fold is highly conserved across the superfamily. A generic residue-numbering system for microbial rhodopsins should therefore be based on structural features rather than sequence.
+
+
+\pdfbookmark[3]{Development of the generic residue-numbering system}{ms-grn-development}
+\subsection*{Development of the generic residue-numbering system}
+
+The MO numbering system is inspired by the Ballesteros-Weinstein system for G~protein-coupled receptors but adapted to the unique architecture of microbial rhodopsins. MO numbering codes consist of two numbers: the first denotes the helix (1-7) and the second the position within the helix relative to the residue closest to retinal, defined as position~50. For example, position 7.46 denotes a residue in TM7, four residues before the Schiff base-forming lysine (defined as 7.50).
+
+The first task in developing the MO numbering system was identifying the closest residues to retinal in each helix \textbf{(Fig.\ 4a)}, which serve as the `anchors' of the numbering system. The distance profiles along each helix \textbf{(Fig.\ 4b)} exhibit the expected systematic variations, reaching their minima at central positions and increasing toward the N- and C-termini. The binding pocket ($<$4~\AA{} around retinal) is formed by residues from TM3-7. Only two residues in TM2 are part of the extended pocket ($<$6~\AA{}), while TM1 is at a peripheral location within the 7-TM bundle and further from retinal. The closest residue to retinal in each helix is designated as an anchor \textbf{(Fig.\ 4b, vertical lines)}. The sequence variability around the anchor positions \textbf{(Supplementary Fig.\ 2b)} shows that they lie within or adjacent to regions of elevated sequence conservation despite the overall sequence divergence of the superfamily. These data support the choice of a ligand-centric approach to capture structurally and functionally critical positions across diverse microbial rhodopsins \textbf{(Supplementary Fig.\ 3)}.
+
+
+\pdfbookmark[3]{Application of the generic residue-numbering system}{ms-grn-application}
+\subsection*{Application of the generic residue-numbering system}
+
+To demonstrate the application of the MO numbering system, we first focus on residues that form the retinal-binding pocket, using \textit{Hs}BR as a reference \textbf{(Fig.\ 5a)}. Retinal is covalently bound to K216\textsuperscript{7.50} (GRNs are shown as superscripts) via a Schiff base linkage and is surrounded by 18 additional residues from TM3-7 (5 from TM3, 3 from TM4, 4 from TM5, 4 from TM6, and 2 from TM7). Two highly conserved carboxylates, D\textsuperscript{3.45} and D\textsuperscript{7.46}, located near K\textsuperscript{7.50} (D85\textsuperscript{3.45} and D212\textsuperscript{7.46} in \textit{Hs}BR), are historically referred to as the ``Schiff base counterions'' and stabilize the positive charge of the protonated Schiff base. Residues at positions 3.53, 4.51, 6.54, and 7.49---known as the L/Q, N/LI, G/P, and A/TS switches, respectively---contribute to spectral tuning in microbial rhodopsins\textsuperscript{30, 31, 32, 33}. In addition, position 4.54 (G122\textsuperscript{4.54} in \textit{Hs}BR) plays an important role in determining retinal planarity: when a non-glycine residue occupies this position, steric clash with the retinal $\beta$-ionone ring can induce rotation and favor a 6-\textit{s}-\textit{cis} retinal conformation (the ``non-G rule'')\textsuperscript{27, 28, 29}. Two other notable positions near the $\beta$-ionone ring are 5.44 and 5.47. Although retinal is enclosed by TM3-7, many microbial rhodopsins have a small lateral opening between TM5 and TM6 that connects the retinal pocket to the lipid bilayer\textsuperscript{11, 13, 34, 35, 36}. The shape of this opening varies among microbial rhodopsins: in some bacterial ion-pumping rhodopsins, residue 5.47 contributes to its formation, whereas in heliorhodopsins (HeR) both 5.44 and 5.47 contribute. Functionally, 5.44 has been implicated in retinal uptake from the membrane---the G171\textsuperscript{5.44}W mutation in \textit{Ts}HeR inhibits this process\textsuperscript{13}---while 5.47 is involved in binding the carotenoid antenna pigment, as evidenced by the G178\textsuperscript{5.47}W mutation in \textit{Gloeobacter} rhodopsin, which inhibits carotenoid binding\textsuperscript{37, 38}.
+
+The MO numbering system also facilitates comparative analyses across subfamilies. As an example, in ion-pumping rhodopsins, the identity of the transported substrate and the direction of transport are primarily influenced by three residues at positions 3.45, 3.49, and 3.56, which are located on one face of TM3 \textbf{(Fig.\ 5b)}\textsuperscript{2, 4, 25}. Ion-pumping rhodopsins containing D\textsuperscript{3.45}, T\textsuperscript{3.49}, and D\textsuperscript{3.56}---known as the DTD motif---predominantly function as outward proton pumps. Upon photoactivation, the proton is released from the Schiff base to the extracellular bulk solvent via T\textsuperscript{3.49}, D\textsuperscript{3.45}, and the proton release group composed of E\textsuperscript{ECL3} and E\textsuperscript{7.38}, accompanied by a conformational change of the key arginine residue R\textsuperscript{3.42}. A new proton is subsequently supplied from the intracellular bulk solvent to the Schiff base via D\textsuperscript{3.56}, thereby accomplishing net transport of a single proton from the intracellular to the extracellular side. In contrast, inward proton-pumping rhodopsins, which comprise schizorhodopsins (SzRs) and xenorhodopsins (XeRs), lack one of the two counterions near the Schiff base. Specifically, D85\textsuperscript{3.45} in \textit{Hs}BR is replaced by F\textsuperscript{3.45} in SzRs, whereas D212\textsuperscript{7.46} in \textit{Hs}BR is replaced by P\textsuperscript{7.46} in XeRs. The D\textsuperscript{3.45}--T\textsuperscript{3.49}--D\textsuperscript{3.56} motif is replaced by FSE in SzRs and by DSA, DTL, or DTS in XeRs, respectively, and the proton release group conserved in outward proton pumps is absent in both SzRs and XeRs\textsuperscript{39, 40}. Inward chloride pumps have T\textsuperscript{3.45}-S\textsuperscript{3.49}-A/D\textsuperscript{3.56} or N\textsuperscript{3.45}-T\textsuperscript{3.49}-Q\textsuperscript{3.56} motifs, and the loss of negative charge caused by replacement of D\textsuperscript{3.45} with T\textsuperscript{3.45} or N\textsuperscript{3.45} is compensated by binding of the chloride substrate\textsuperscript{41, 42, 43}. Outward sodium pumps share the N\textsuperscript{3.45}-D\textsuperscript{3.49}-Q\textsuperscript{3.56} motif, in which transient proton transfer from the Schiff base to D\textsuperscript{3.49} enables the sodium ion to pass through the Schiff base region\textsuperscript{24, 35, 44, 45}.
+
+The MO numbering system is equally applicable to rhodopsins with non-canonical architectures. Heliorhodopsins (HeRs), for instance, have an inverted topology, with an intracellular N-terminus and an extracellular C-terminus \textbf{(Fig.\ 5c)}. Despite this inversion, our structural alignment and annotation approach remains effective. At the sequence level, HeRs retain a TM3 counterion at position 3.45, whereas the TM7 counterion at 7.46 is replaced by serine. While the molecular functions of most HeRs remain unclear, a recent study suggested that V2HeR3 functions as a proton transporter\textsuperscript{46}, and the MO numbering system may facilitate future comparative analyses as more functional data become available.
+
+Channelrhodopsins, widely used in optogenetics, present a challenge for systematic comparison: mutagenesis and protein engineering have generated numerous functional variants, while metagenomics continues to uncover natural diversity. The MO numbering system enables mapping of this diversity onto a common structural framework, as illustrated for C1C2 structure \textbf{(Fig.\ 5d)}. Unlike ion-pumping rhodopsins, the TM3 residues at positions 3.45, 3.49, and 3.56 are not essential for channel function in canonical dimeric channelrhodopsins; substitutions at these and nearby positions, such as E\textsuperscript{3.45}T or H\textsuperscript{3.56}R, primarily affect channel kinetics\textsuperscript{47, 48}. Instead, ion selectivity and kinetics are largely determined by five glutamates (E1--E5, corresponding to E\textsuperscript{2.46}, E\textsuperscript{2.47}, E\textsuperscript{2.54}, E\textsuperscript{2.61}, and E\textsuperscript{2.65}) aligned along TM2\textsuperscript{49, 50, 51, 52}. The DC gate, formed by D\textsuperscript{4.47} and C\textsuperscript{3.50}, controls channel closure kinetics and light sensitivity, enabling bistable optical control of neuronal activity\textsuperscript{53, 54, 55}. \textbf{Fig.\ 5d} summarizes additional positions implicated in spectral tuning, conductance, and kinetics\textsuperscript{27, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68}, and \textbf{Supplementary Fig.\ 4} summarizes positions that affect properties in trimeric channelrhodopsins\textsuperscript{14, 28, 69, 70, 71, 72, 73, 74, 75}.
+
+Transducer-activating rhodopsins (sensory rhodopsins) relay light signals to downstream effectors. Structural, spectroscopic, and mutational studies have clarified the activation mechanism of \textit{Np}SRII\textsuperscript{76, 77, 78} \textbf{(Fig.\ 5e)}. \textit{Np}SRII forms a 2:2 complex with its transducer HtrII through an interface formed by TM6 and TM7 of \textit{Np}SRII and TM1 and TM2 of HtrII. In \textit{Np}SRII, retinal photoisomerization induces structural changes in residues Y174\textsuperscript{6.53}, L200\textsuperscript{7.45}, D201\textsuperscript{7.46}, and T204\textsuperscript{7.49}, which are transmitted to HtrII via the interaction between Y199\textsuperscript{7.44} and N74 of HtrII\textsuperscript{78, 79}. Notably, the key residue T204\textsuperscript{7.49} in \textit{Np}SRII is not conserved in \textit{H.\ salinarum} SRI (\textit{Hs}SRI), suggesting that this signaling pathway may be specific to \textit{Np}SRII rather than a general feature of transducer-activating rhodopsins\textsuperscript{80}.
+
+Enzyme-fused rhodopsins, such as rhodopsin-guanylyl cyclases and rhodopsin-phosphodiesterases, couple light detection to enzymatic activity. A characteristic feature of these proteins---shared with some channel-fused rhodopsins---is an additional TM0 helix at the N-terminus of the seven-transmembrane core\textsuperscript{6, 16}. The MO numbering system annotates the seven helices forming the retinal-binding domain, excluding TM0. For NeoR, the longest-wavelength rhodopsin reported to date, functional studies have identified three acidic residues essential for activity: E136\textsuperscript{3.45}, D140\textsuperscript{3.49}, and E262\textsuperscript{7.46}\textsuperscript{\,81} \textbf{(Fig.\ 5f)}. As structural and spectroscopic data on enzyme-fused rhodopsins accumulate, the MO numbering system will facilitate comparative analysis of their activation mechanisms.
+
+The MO numbering system also accommodates microbial rhodopsins that exhibit gaps or insertions arising from local structural distortions \textbf{(Supplementary Fig.\ 5)}. For example, ChRmine, a trimeric cation-conducting channelrhodopsin\textsuperscript{82}, contains a constricted 3\textsubscript{10} helical turn within TM6 that results in a gap in the sequence alignment\textsuperscript{14} \textbf{(Supplementary Fig.\ 5, salmon)}. In this case, the `missing' position (6.48) is simply skipped. Conversely, TaraRRB-R1, a channel-regulating rhodopsin\textsuperscript{6}, contains a bulged $\pi$-helical turn in TM5 that introduces an additional residue between 5.45 and 5.46 \textbf{(Supplementary Fig.\ 5, green)}, which designated 5.45\textsubscript{1}.
+
+Together, these applications demonstrate that the MO numbering system provides a unified framework for comparing rhodopsins across functional classes, taxonomic origins, and structural variations.
+
+
+\pdfbookmark[3]{Application of the MO numbering system to a large dataset of microbial rhodopsins}{ms-grn-large-dataset}
+\subsection*{Application of the MO numbering system to a large dataset of microbial rhodopsins}
+
+To test the MO numbering system at scale, we applied it to a large sequence dataset that includes both characterized and uncharacterized rhodopsins. We combined the 129 functionally characterized rhodopsins in our curated dataset with a large collection of uncharacterized rhodopsin-like sequences, yielding an initial set of over 300,000 sequences from archaea, bacteria, eukaryotes, and viruses (Nishimura et al., in preparation). After curation, we obtained approximately 40,000 non-redundant sequences. From pairwise sequence similarities, we constructed a protein similarity network in which nodes represent individual sequences and edges connect pairs exceeding a defined similarity threshold \textbf{(Fig.\ 6a)}. The network resolved 14 clusters containing functionally characterized rhodopsins and 17 clusters containing only uncharacterized rhodopsins \textbf{(Supplementary Fig.\ 6)}. The 14 characterized clusters comprise six major groups---archaeal/eukaryotic, bacterial, viral (VirR)\textsuperscript{83, 84}, canonical channelrhodopsins (ChRs)\textsuperscript{85, 86}, canonical histidine kinase-fused rhodopsins (HKRs)\textsuperscript{85, 86}, and canonical heliorhodopsins (HeRs)\textsuperscript{87}---and eight minor groups: schizorhodopsins (SzRs)\textsuperscript{88}, cryptophyte anion-conducting channelrhodopsins (ACRs)\textsuperscript{89}, alveolate ChRs\textsuperscript{23}, pump-like channelrhodopsins (PLCRs)\textsuperscript{90}, guanylate cyclase-/phosphodiesterase-fused rhodopsins (RhoGC/RhoPDEs)\textsuperscript{16}, bestrophin-fused rhodopsins (BestRs)\textsuperscript{6}, noncanonical HKRs\textsuperscript{91}, and eukaryotic/viral HeRs\textsuperscript{46} \textbf{(Supplementary Fig.\ 6)}.
+
+To validate the clustering and explore uncharacterized rhodopsins, we predicted structures for 11 sequences from the periphery of 5 of the 14 functionally characterized clusters, along with one representative member from each of the 17 uncharacterized clusters \textbf{(Supplementary Fig.\ 7a)}. In total, we generated structural models for 28 rhodopsin-like proteins \textbf{(Supplementary Fig.\ 7b)}. All 11 characterized and 13 of the 17 uncharacterized sequences (uncharacterized clusters 1--13) adopted a rhodopsin fold and were retained for further analysis. Of the 13 uncharacterized rhodopsins, two lacked the conserved Lys\textsuperscript{7.50} and one exhibited an incorrectly predicted retinal-binding pose. Several uncharacterized clusters exhibited distinctive structural features: for example, the rhodopsin in cluster~2 has an unusually long TM1, whereas the rhodopsin in cluster~10 contains $\beta$-strands in ECL2 and ECL3 that form an extracellular $\beta$-sheet \textbf{(Supplementary Fig.\ 7b)}.
+
+To examine sequence conservation, we generated sequence logos in selected clusters \textbf{(Fig.\ 6b,c; Supplementary Fig.\ 8 and 9)}. Conserved residues grouped near the X.50 anchor positions at approximately four-residue intervals, consistent with enrichment on the retinal-facing side of each helix; lipid-exposed positions showed lower conservation. Across all clusters, residues in TM3, TM6, and TM7 were more conserved than those in other helices. The arginine at position 3.42 is highly conserved across all functionally characterized clusters---with the exception of the PLCR cluster---consistent with its known key functional roles\textsuperscript{92, 93, 94, 95, 96}. Residues forming the retinal-binding pocket (positions 3.46, 6.50, 6.53, and 6.54) and the Schiff base counterions (positions 3.45 and 7.46) are well conserved within characterized clusters; however, position 7.46 is more conserved than 3.45. Most characterized clusters have a highly conserved Asp at 7.46, but the alveolata ChR, bacterial/archaeal HeR, and eukaryotic/viral HeR clusters show highly conserved Asn, Ser, and Ser, respectively. Positions 3.50 and 3.51 vary markedly between characterized clusters---while remaining conserved within each---suggesting that these positions are linked to cluster-specific functions and serve as characteristic sequence signatures for these rhodopsin families. Similar conservation patterns were observed in uncharacterized clusters, although position 3.50 in cluster~1 and position 7.46 in cluster~4 showed reduced conservation.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Discussion}{ms-grn-discussion}
+\section*{Discussion}
+%-------------------------------------------------------
+
+The repertoire of microbial rhodopsins continues to expand. With estimates of global microbial diversity ranging from 10\textsuperscript{6\,97} to 10\textsuperscript{12} species\textsuperscript{98}, and over two million bacterial and archaeal genomes now sequenced\textsuperscript{99}, the number of identified rhodopsin genes---already exceeding 10,000\textsuperscript{100}---will undoubtedly grow further. This expanding diversity, combined with ongoing optogenetics engineering efforts, has made a unified residue-numbering system increasingly necessary.
+
+The limitations of existing numbering approaches become apparent when comparing across functional classes. Ion-pumping rhodopsins have historically been described using BR-based residue numbering, whereas channelrhodopsins are typically numbered according to ChR2- or C1C2-based systems. The three-residue TM3 motif introduced in 2013-2014 provides a useful signature for classifying ion-pump functions\textsuperscript{24, 25}; however, in channelrhodopsins, functional properties are determined primarily by other residues, including five glutamates in TM2, rather than by the TM3 motif. These differences underscore the need for a broadly applicable numbering system, which motivated the development of the MO numbering system.
+
+The sequence similarity network provides insight into the evolutionary relationships among microbial rhodopsins \textbf{(Fig.\ 6a, Supplementary Fig.\ 6)}. Rhodopsins from archaea and eukaryotes form a single major cluster (the archaeal/eukaryotic rhodopsin cluster), whereas bacterial rhodopsins occupy a distinct cluster (the bacterial rhodopsin cluster). This pattern indicates that eukaryotic microbial rhodopsins are more closely related to archaeal than to bacterial rhodopsins, consistent with previous phylogenetic and structural analyses\textsuperscript{101, 102, 103, 104}.
+
+Rhodopsins within the same cluster but with different functions likely diverged from a common ancestor, whereas functionally similar rhodopsins in different clusters likely arose through convergent evolution. For example, both the archaeal/eukaryotic and bacterial clusters include chloride-pumping rhodopsins, yet their TM3 motifs differ (T\textsuperscript{3.45}-S\textsuperscript{3.49}-A/D\textsuperscript{3.56} versus N\textsuperscript{3.45}-T\textsuperscript{3.49}-Q\textsuperscript{3.56}, respectively), suggesting that chloride-transport function evolved independently in these lineages. Within clusters, oligomeric assembly and sequence motifs are conserved despite functional diversification. This conservation likely explains why researchers have been able to interconvert functions through relatively few mutations, even among rhodopsins sharing only ${\sim}$30\% sequence identity\textsuperscript{51, 52, 79, 105, 106, 107, 108}.
+
+The conservation of oligomeric assembly within clusters raises a question: what determines oligomeric state? All characterized microbial rhodopsins form specific oligomers, ranging from dimers to hexamers, and rhodopsins within the same clade consistently adopt the same oligomeric state\textsuperscript{8, 9, 13, 14, 88, 109, 110}. Yet residues on the outer, lipid-exposed surface are generally poorly conserved, even in helices that participate in oligomeric interfaces. This suggests that oligomeric state is not dictated by a fixed set of conserved interface residues. In some rhodopsins, such as \textit{Np}HR, outer-facing residues do contribute to interprotomer contacts and stabilize oligomerization\textsuperscript{111}, but these residues are not conserved across clusters, implying that they fine-tune oligomer stability within a family rather than specifying oligomeric state. Instead, we propose that the type of oligomer formed is largely determined by helix-packing geometry, specifically how the transmembrane helices are tilted and arranged relative to one another. Helix tilt can be influenced by glycine and proline residues within helices, as well as loop architecture. In particular, the length and orientation of the extracellular loop 1 (ECL1) have been proposed to distinguish trimeric from pentameric or hexameric assemblies\textsuperscript{101}. However, pentameric rhodopsins such as GR and TR form trimers in DDM micelles\textsuperscript{101, 109}, suggesting that the ECL1 may bias helix tilt toward particular arrangements without rigidly fixing protomer number. This observation implies that the membrane or detergent environment also contributes to stabilizing a given assembly.
+
+Beyond evolutionary and oligomeric insights, our study also assessed the utility of structure prediction for rhodopsin analysis. Structure prediction methods performed well for rhodopsins. Predictions captured the overall fold and the detailed architecture of the retinal-binding pocket, often correctly reproducing the retinal configuration and orientation, including whether the chromophore adopts an all-\textit{trans} geometry or a 6-\textit{s}-\textit{cis} conformation consistent with the non-G rule\textsuperscript{28, 29, 35}. Our backbone RMSDs (0.61~\AA{} for Set~A and 0.80~\AA{} for Set~B) are comparable to those reported for Boltz-1 in the Runs N' Poses benchmark\textsuperscript{112} (0.56~\AA{}) and lower than AlphaFold2 predictions of GPCRs\textsuperscript{113} (1.12--1.55~\AA{}). The accuracy of retinal placement is particularly notable: our mean retinal RMSDs of 0.41~\AA{} (Set~A) and 0.62~\AA{} (Set~B) are substantially lower than the 2.30~\AA{} mean ligand RMSD that Boltz-1 achieved on diverse protein-ligand complexes in the Runs N' Poses benchmark. This likely reflects the strong structural constraints imposed by the retinal-binding pocket, including the covalent Schiff base linkage to the conserved lysine.
+
+However, inaccuracies were frequently observed in fine structural details, including the placement of loop regions and side-chain rotamers. For example, in the predicted structure of \textit{Kn}ChR, the retinal chromophore is not covalently linked to the Schiff base-forming lysine (K\textsuperscript{7.50}) \textbf{(Fig.\ 2b and Supplementary Fig.\ 10a)}. In \textit{Gt}ACR1, the $\beta$-ionone ring of the retinal adopts an incorrectly twisted conformation\textsuperscript{12} \textbf{(Supplementary Fig.\ 10b)}. In Tara-RRB R2, the cytoplasmic ends of TM0, TM1, TM2, and TM7 show marked deviations from the experimentally determined structure \textbf{(Fig.\ 2a and Supplementary Fig.\ 10c)}. In \textit{Hc}KCR2, the architecture of the potassium selectivity filter is incorrectly predicted\textsuperscript{28} \textbf{(Supplementary Fig.\ 10d)}. These issues may become problematic when predicted structures are used e.g.\ as inputs for molecular dynamics simulations or for interpreting spectroscopic measurements, where accurate loop conformations and side-chain rotamers are critical. Thus, while current structure prediction methods are sufficiently accurate for comparative analyses and for capturing the overall architecture and retinal environment, they do not replace experimental structure determination when precise atomic detail or characterization of conformational dynamics is required.
+
+The MO numbering system offers the microbial rhodopsin field a common vocabulary. As the repertoire of rhodopsins continues to expand through metagenomics and structural prediction, we anticipate that it will become a standard tool for comparing residues, interpreting functional data, and guiding optogenetic engineering.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Methods}{ms-grn-methods}
+\section*{Methods}
+%-------------------------------------------------------
+
+\pdfbookmark[3]{Structural Dataset}{ms-grn-structural-dataset}
+\subsection*{Structural Dataset}
+
+We assembled a comprehensive structural dataset of 129 microbial rhodopsins spanning all major functional classes---proton pumps, chloride pumps, sodium pumps, cation channels, anion channels, sensory rhodopsins, and enzyme rhodopsins---with representatives from archaea, bacteria, and eukaryotes. Experimentally determined structures were obtained from the Protein Data Bank, supplemented by eight recently solved channelrhodopsin structures (Kishi et al., in preparation) ($n = 69$). The experimental structures were partitioned into two validation cohorts based on PDB deposition date relative to the Boltz-1\textsuperscript{114} training data cutoff (September 2021): a benchmark set (Set~A, $n = 42$) potentially overlapping with training data, and a blind test set (Set~B, $n = 27$) comprising structures deposited after the cutoff. For each experimentally characterized protein, we generated Boltz-1 predictions to enable systematic assessment of prediction accuracy. We additionally predicted structures for 60 functionally characterized rhodopsins lacking experimental structures. All analyses were performed on chain~A, with retinal chromophores identified by residue name and validated by proximity ($\leq$6.0~\AA{} to protein atoms).
+
+
+\pdfbookmark[3]{Structure Prediction and Validation}{ms-grn-prediction}
+\subsection*{Structure Prediction and Validation}
+
+For Boltz-1 predictions, input sequences were trimmed to transmembrane domain boundaries when exceeding 400 residues. Retinal was specified as all-trans-retinal without the aldehyde oxygen (SMILES code: CC=C(C)C=CC=C(C)C=CC1=C(C)CCCC1(C)C), allowing Boltz-1 to predict the covalent Schiff base linkage to the conserved lysine. Prediction accuracy was assessed by comparing each model to its experimental counterpart using the combinatorial extension alignment algorithm (CEalign)\textsuperscript{115} (window size = 8, maximum gap = 30) with a two-pass refinement procedure: an initial global alignment using all C$\alpha$ atoms, followed by refinement restricted to residue pairs with inter-C$\alpha$ distance $\leq$3~\AA{} after the initial superposition to exclude flexible regions with large structural divergence. Accuracy was quantified using three metrics: backbone C$\alpha$ RMSD (overall fold accuracy), binding pocket RMSD (C$\alpha$ atoms within 6.0~\AA{} of retinal; local accuracy in the chromophore environment), and ligand RMSD (mean closest-atom distance between experimental and predicted retinal coordinates).
+
+
+\pdfbookmark[3]{Structure Conservation Analysis}{ms-grn-conservation-analysis}
+\subsection*{Structure Conservation Analysis}
+
+We first aligned the shared TM bundle of all members of our dataset. Pairwise structural similarities (calculated using CEalign) were computed as C$\alpha$ RMSD across TM 1--7 to generate a symmetric distance matrix. Our structure analysis leverages the conserved microbial rhodopsin fold by using the closest residue in each helix (TM1-TM6) and the Schiff-base lysine in TM7 as anchors. We then performed hierarchical clustering. For each GRN position, two distance profiles were calculated: (i) side-chain distances, from heavy atoms to the nearest retinal atom, and (ii) C$\alpha$ distances, from backbone C$\alpha$ to the nearest retinal atom. Equivalent residue pairs for all pairwise alignments were stored to create the blueprint of the MO numbering system.
+
+
+\pdfbookmark[3]{Generic Residue-Numbering System}{ms-grn-numbering-system}
+\subsection*{Generic Residue-Numbering System}
+
+We developed the MO numbering system by assigning GRNs based on structural equivalence relative to a reference structure, 7BMH, selected based on its low mean RMSD to all other structures. In the MO numbering system, residues are numbered relative to the helix-specific anchors using the format $\langle$Helix$\rangle$.$\langle$Position$\rangle$ (e.g., 3.49, 3.50, 3.51). After annotating the reference structure, we used the stored residue pair equivalences to assign GRNs to all other structures. The resulting preliminary MO numbering system was curated to correct alignment artifacts, including helix truncations and register shifts arising from the repetitive nature of $\alpha$-helical structures. Then, the less conserved outer parts of the helices were annotated up until the end of the helices by determining helical residues based on phi-psi angles of the backbone. The non-helical loop regions and tails received systematic identifiers.
+
+
+\pdfbookmark[3]{Microbial Rhodopsin Sequence Search}{ms-grn-sequence-search}
+\subsection*{Microbial Rhodopsin Sequence Search}
+
+To construct Hidden Markov Models (HMMs) for rhodopsin sequence exploration, known rhodopsins and their homologs were collected from NCBI, the UniProt Archive\textsuperscript{116}, and the Marine Microbial Eukaryote Transcriptome Sequencing Project (MMETSP)\textsuperscript{117}. One collection (subAEV: 3,173 sequences) was constructed mainly from archaeal-, eukaryotic-, and viral-derived rhodopsins\textsuperscript{118}. Another collection (subB: 2,275 sequences) was mainly composed of bacterial-derived rhodopsins. A third collection (subH: 720 sequences) was composed of heliorhodopsins and their homologs. Profile HMMs for the subAEV, subB, and subH collections were constructed from sequence alignments computed using MAFFT (v7.453)\textsuperscript{119} with the ``-{}-genafpair'' and ``-{}-maxiterate 1000'' options. Using these HMMs, we searched the UniParc database (as of November 2020), the marine eukaryotic reference catalog\textsuperscript{120}, the 1000 Plant Transcriptomes Initiative dataset\textsuperscript{121}, MMETSP, and 10,032 metagenomic assemblies derived from various environments (Nishimura et al., in preparation). Rhodopsin homologs were identified using hmmsearch (HMMER v3.3)\textsuperscript{122} with an e-value threshold of $<$1e\textsuperscript{-5} and a length threshold of $\geq$174 amino acids, corresponding to the HMM length. We clustered 309,570 protein sequences using CD-HIT\textsuperscript{123} (v.4.8.1) at 90\% global identity (-c 0.90, -G 1) without additional coverage constraints (no -aS/-aL), resulting in 41,136 non-redundant sequences.
+
+
+\pdfbookmark[3]{Network Analysis Visualization}{ms-grn-network}
+\subsection*{Network Analysis Visualization}
+
+We collected reference rhodopsins ($n = 147$) that were functionally and/or structurally characterized, along with the 41,136 non-redundant, uncharacterized rhodopsin sequences. Because enzymatic rhodopsins contain additional domains, the rhodopsin regions of both reference and uncharacterized sequences were extracted using aligned regions based on hmmsearch (HMMER v3.3)\textsuperscript{122} with the three HMMs (subAEV, subB, and subH). To further remove redundancy within the uncharacterized dataset, protein clustering was performed using MMseqs2 (ver.\ 15-6f452)\textsuperscript{124} at 60\% identity and 50\% coverage, with options ``-{}-min-seq-id 0.6 -c 0.5 -{}-cluster-mode 2 -{}-cov-mode 0''. Cluster representatives ($n = 5{,}168$) were combined with the reference rhodopsins (total $n = 5{,}315$).
+
+Normalized pairwise similarity within the resultant sequences was computed using CPAP (\url{https://github.com/yosuken/cpap}), which performed all-against-all BLASTp with options ``-evalue 1e-2 -dbsize 100000000'' and quantified normalized similarity scores between all possible protein pairs based on high-scoring segment pairs (HSPs) that have $\geq$20\% identity and are $\geq$20 amino acids in length, as follows:
+
+Let $n_{AB,i}$ be the length-normalized bit score (i.e., bit score per position) of the HSP covering position $i$ of protein $A$, where BLASTp is performed using $A$ as the query and $B$ as the subject. If multiple HSPs cover position $i$, the maximum value is used.
+%
+\begin{equation*}
+  M_{AB,i} = \max(n_{AB,i})
+\end{equation*}
+
+Let $L_A$ be the length of protein $A$. Let $N_{AB}$ ($0 \leq N_{AB} \leq 1$) be the normalized similarity score between proteins $A$ and $B$.
+%
+\begin{equation*}
+  U_{AB} = \frac{\sum_i M_{AB,i}}{\sum_i M_{AA,i}},\quad 0 \leq i \leq L_A
+\end{equation*}
+%
+\begin{equation*}
+  N_{AB} = \frac{1}{2}(U_{AB} + U_{BA})
+\end{equation*}
+
+The resulting network was visualized using Gephi (ver.\ 0.10.1). Edges were drawn between protein pairs with normalized similarity scores $\geq 0.2$.
+
+
+\pdfbookmark[3]{Sequence Logo Generation}{ms-grn-logos}
+\subsection*{Sequence Logo Generation}
+
+Sequence logos were generated using WebLogo3\textsuperscript{125}. Sequences were aligned according to their MO numbering positions, and logos were computed for each transmembrane helix. For cluster-specific analyses, sequences were grouped based on their assignment in the sequence similarity network, and separate logos were generated for each TM regions (TM1-7). Amino acid frequencies are displayed as information content in bits.
+
+
+\pdfbookmark[3]{Statistical Analysis and Data Availability}{ms-grn-statistics}
+\subsection*{Statistical Analysis and Data Availability}
+
+Correlations between structural and sequence metrics were computed using Pearson's correlation with two-tailed significance testing. All analyses (structural alignment, superposition) were performed in Python 3.10 using Biopython. Dataset management and CIF parsing were performed using ProtOS (Hidber et al., manuscript in preparation, \url{https://github.com/flurinh/protos}). Structure coordinates, alignments, RMSD matrices, GRN tables and all analysis code are provided at \url{https://github.com/flurinh/mogrn}. The structure analysis data is available at \url{https://doi.org/10.5281/zenodo.18147121}.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Acknowledgments}{ms-grn-acknowledgments}
+\section*{Acknowledgments}
+%-------------------------------------------------------
+
+We would like to thank Y.\ Oheda and A.\ Kojima (UTokyo) for technical and K.\ Hasegawa and A.\ Ohira (UTokyo) for administrative support. We acknowledge ChatGPT, a multimodal large language model created by OpenAI, for providing guidance to improve the readability of this manuscript. After using this tool, we reviewed and edited the content as needed and took full responsibility for the content of the publication. This work was supported by the Nakajima Foundation to H.E.K., Takeda Science Foundation to H.E.K., Japan Agency for Medical Research and Development (AMED) (grant no.\ 24bm1123057h0001 to H.E.K.), Japan Society for the Promotion of Science (JSPS) KAKENHI (grant no.\ 24KJ0788 to S.T., 22K15089 to Y.N., 22H00557 to S.Y.\ and 22K19265, 22H00400, and 25H01338 to H.E.K.), JST FOREST (grant no.\ JPMJFR204S to H.E.K.), JST CREST (grant no.\ JPMJCR21P3 and JPMJCR23B1 to H.E.K.), European Union's Horizon 2020 research and innovation programme (grant agreement no.\ 951644, supporting F.S.H.), and Swiss National Science Foundation (grant no.\ 192780 to X.D.). The authors dedicate this paper to G.F.X.\ Schertler, H.\ Kandori, and P.\ Hegemann: many years of insightful and exciting scientific discussions partly inspired this work.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Author Contributions}{ms-grn-contributions}
+\section*{Author Contributions}
+%-------------------------------------------------------
+
+F.S.H., S.T., K.E.K., X.D., and H.E.K.\ discussed and defined the MO numbering system. Under the supervision of X.D., F.S.H.\ performed the structure comparison analysis and built the MO numbering system framework. Under the supervision of H.E.K., S.T.\ analyzed sequence alignments and structures. Y.N.\ and S.Y.\ mined in-house metagenome and transcriptome databases to identify rhodopsin-like genes. Under the supervision of S.Y.\ and H.E.K., S.T.\ and Y.N.\ constructed and analyzed the sequence similarity network. F.S.H., S.T., X.D., and H.E.K.\ wrote the manuscript and prepared the figures with input from all authors. X.D.\ and H.E.K.\ supervised the project.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Competing Interests}{ms-grn-competing}
+\section*{Competing Interests}
+%-------------------------------------------------------
+
+The authors declare no competing interests.
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{References}{ms-grn-references}
+\section*{References}
+%-------------------------------------------------------
+
+\begin{enumerate}[leftmargin=2em, labelsep=0.5em, itemsep=0.3em, parsep=0pt, font=\small]
+
+\item Oesterhelt D, Stoeckenius W. Rhodopsin-like Protein from the Purple Membrane of Halobacterium halobium. \textit{Nat N Biol} \textbf{233}, 149-152 (1971).
+
+\item Ernst OP, Lodowski DT, Elstner M, Hegemann P, Brown LS, Kandori H. Microbial and Animal Rhodopsins: Structures, Functions, and Molecular Mechanisms. \textit{Chem Rev} \textbf{114}, 126-163 (2014).
+
+\item Kato Y, Hasunuma T. Carotenoids: Biosynthetic and Biofunctional Approaches. \textit{Adv Exp Med Biol} \textbf{1261}, 121-135 (2021).
+
+\item Rozenberg A, Inoue K, Kandori H, B\'ej\`a O. Microbial Rhodopsins: The Last Two Decades. \textit{Annu Rev Microbiol} \textbf{75}, 1-21 (2021).
+
+\item Sudo Y, \textit{et al}. A Microbial Rhodopsin with a Unique Retinal Composition Shows Both Sensory Rhodopsin II and Bacteriorhodopsin-like Properties*. \textit{J Biol Chem} \textbf{286}, 5967-5976 (2011).
+
+\item Rozenberg A, \textit{et al}. Rhodopsin-bestrophin fusion proteins from unicellular algae form gigantic pentameric ion channels. \textit{Nat Struct Mol Biol} \textbf{29}, 592-603 (2022).
+
+\item Sugiura M, \textit{et al}. Unusual Photoisomerization Pathway in a Near-Infrared Light Absorbing Enzymerhodopsin. \textit{J Phys Chem Lett} \textbf{13}, 9539-9543 (2022).
+
+\item Shibata M, \textit{et al}. Oligomeric states of microbial rhodopsins determined by high-speed atomic force microscopy and circular dichroic spectroscopy. \textit{Sci Rep} \textbf{8}, 8262 (2018).
+
+\item Mannen K, \textit{et al}. Multiple Roles of a Conserved Glutamate Residue for Unique Biophysical Properties in a New Group of Microbial Rhodopsins Homologous to TAT Rhodopsin. \textit{J Mol Biol} \textbf{436}, 168331 (2024).
+
+\item Ikuta T, \textit{et al}. Structural insights into the mechanism of rhodopsin phosphodiesterase. \textit{Nat Commun} \textbf{11}, 5605 (2020).
+
+\item Kato HE, \textit{et al}. Crystal structure of the channelrhodopsin light-gated cation channel. \textit{Nature} \textbf{482}, 369-374 (2012).
+
+\item Kim YS, \textit{et al}. Crystal structure of the natural anion-conducting channelrhodopsin GtACR1. \textit{Nature} \textbf{561}, 343-348 (2018).
+
+\item Shihoya W, \textit{et al}. Crystal structure of heliorhodopsin. \textit{Nature} \textbf{574}, 132-136 (2019).
+
+\item Kishi KE, \textit{et al}. Structural basis for channel conduction in the pump-like channelrhodopsin ChRmine. \textit{Cell} \textbf{185}, 672-689.e623 (2022).
+
+\item Pushkarev A, \textit{et al}. A distinct abundant group of microbial rhodopsins discovered using functional metagenomics. \textit{Nature} \textbf{558}, 595-599 (2018).
+
+\item Mukherjee S, Hegemann P, Broser M. Enzymerhodopsins: novel photoregulated catalysts for optogenetics. \textit{Curr Opin Struct Biol} \textbf{57}, 118-126 (2019).
+
+\item Grip WJd, Ganapathy S. Rhodopsins: An Excitingly Versatile Protein Species for Research, Development and Creative Engineering. \textit{Front Chem} \textbf{10}, 879609 (2022).
+
+\item Olivella M, Gonzalez A, Pardo L, Deupi X. Relation between sequence and structure in membrane proteins. \textit{Bioinformatics} \textbf{29}, 1589-1592 (2013).
+
+\item Nagel G, \textit{et al}. Channelrhodopsin-2, a directly light-gated cation-selective membrane channel. \textit{Proc Natl Acad Sci} \textbf{100}, 13940-13945 (2003).
+
+\item Ballesteros JA, Weinstein H. [19] Integrated methods for the construction of three-dimensional models and computational probing of structure-function relations in G protein-coupled receptors. \textit{Methods Neurosci} \textbf{25}, 366-428 (1995).
+
+\item Isberg V, \textit{et al}. Generic GPCR residue numbers -- aligning topology maps while minding the gaps. \textit{Trends Pharmacol Sci} \textbf{36}, 22-31 (2015).
+
+\item Bertalan Ev, \textit{et al}. Hydrogen-Bonding and Hydrophobic Interaction Networks as Structural Determinants of Microbial Rhodopsin Function. \textit{J Phys Chem B} \textbf{128}, 7407-7426 (2024).
+
+\item Govorunova EG, \textit{et al}. Cation and Anion Channelrhodopsins: Sequence Motifs and Taxonomic Distribution. \textit{mBio} \textbf{12}, 10.1128/mbio.01656-01621 (2021).
+
+\item Inoue K, \textit{et al}. A light-driven sodium ion pump in marine bacteria. \textit{Nat Commun} \textbf{4}, 1678 (2013).
+
+\item Yoshizawa S, \textit{et al}. Functional characterization of flavobacteria rhodopsins reveals a unique class of light-driven chloride pump in bacteria. \textit{Proc Natl Acad Sci} \textbf{111}, 6732-6737 (2014).
+
+\item Sephus CD, Fer E, Garcia AK, Adam ZR, Schwieterman EW, Kacar B. Earliest Photic Zone Niches Probed by Ancestral Microbial Rhodopsins. \textit{Mol Biol Evol} \textbf{39}, msac100 (2022).
+
+\item Kato HE, \textit{et al}. Atomistic design of microbial opsin-based blue-shifted optogenetics tools. \textit{Nat Commun} \textbf{6}, 7177 (2015).
+
+\item Tajima S, \textit{et al}. Structural basis for ion selectivity in potassium-selective channelrhodopsins. \textit{Cell} \textbf{186}, 4325-4344.e4326 (2023).
+
+\item Wang YZ, \textit{et al}. Cryo-EM structure of a blue-shifted channelrhodopsin from Klebsormidium nitens. \textit{Nat Commun} \textbf{16}, 5297 (2025).
+
+\item Man D, \textit{et al}. Diversification and spectral tuning in marine proteorhodopsins. \textit{EMBO J} \textbf{22}, 1725-1731 (2003).
+
+\item Inoue K, \textit{et al}. Red-shifting mutation of light-driven sodium-pump rhodopsin. \textit{Nat Commun} \textbf{10}, 1993 (2019).
+
+\item Sugiura M, Tsunoda SP, Hibi M, Kandori H. Molecular Properties of New Enzyme Rhodopsins with Phosphodiesterase Activity. \textit{ACS Omega} \textbf{5}, 10602-10609 (2020).
+
+\item Wang WW, Sineshchekov OA, Spudich EN, Spudich JL. Spectroscopic and photochemical characterization of a deep ocean proteorhodopsin. \textit{J Biol Chem} \textbf{278}, 33985-33991 (2003).
+
+\item Luecke H, \textit{et al}. Crystallographic structure of xanthorhodopsin, the light-driven proton pump with a dual chromophore. \textit{Proc Natl Acad Sci} \textbf{105}, 16561-16565 (2008).
+
+\item Kato HE, \textit{et al}. Structural basis for Na+ transport mechanism by a light-driven Na+ pump. \textit{Nature} \textbf{521}, 48-53 (2015).
+
+\item Tzlil G, \textit{et al}. Structural insights into light harvesting by antenna-containing rhodopsins in marine Asgard archaea. \textit{Nat Microbiol} \textbf{10}, 1484-1500 (2025).
+
+\item Imasheva ES, Balashov SP, Choi AR, Jung K-H, Lanyi JK. Reconstitution of Gloeobacter violaceus Rhodopsin with a Light-Harvesting Carotenoid Antenna. \textit{Biochemistry} \textbf{48}, 10948-10955 (2009).
+
+\item Chuon K, \textit{et al}. Carotenoid binding in Gloeobacteria rhodopsin provides insights into divergent evolution of xanthorhodopsin types. \textit{Commun Biol} \textbf{5}, 512 (2022).
+
+\item Shevchenko V, \textit{et al}. Inward H+ pump xenorhodopsin: Mechanism and alternative optogenetic approach. \textit{Sci Adv} \textbf{3}, e1603187 (2017).
+
+\item Higuchi A, \textit{et al}. Crystal structure of schizorhodopsin reveals mechanism of inward proton pumping. \textit{Proc Natl Acad Sci} \textbf{118}, e2016328118 (2021).
+
+\item Kolbe M, Besir Hs, Essen L-O, Oesterhelt D. Structure of the Light-Driven Chloride Pump Halorhodopsin at 1.8 \AA{} Resolution. \textit{Science} \textbf{288}, 1390-1396 (2000).
+
+\item Kim K, \textit{et al}. Crystal structure and functional characterization of a light-driven chloride pump having an NTQ motif. \textit{Nat Commun} \textbf{7}, 12677 (2016).
+
+\item Yun J-H, \textit{et al}. Structure-Based Functional Modification Study of a Cyanobacterial Chloride Pump for Transporting Multiple Anions. \textit{J Mol Biol} \textbf{432}, 5273-5286 (2020).
+
+\item Kato HE, Inoue K, Kandori H, Nureki O. The light-driven sodium ion pump: A new player in rhodopsin research. \textit{Bioessays} \textbf{38}, 1274-1282 (2016).
+
+\item Skopintsev P, \textit{et al}. Femtosecond-to-millisecond structural changes in a light-driven sodium pump. \textit{Nature} \textbf{583}, 314-318 (2020).
+
+\item Hososhima S, \textit{et al}. Proton-transporting heliorhodopsins from marine giant viruses. \textit{eLife} \textbf{11}, e78416 (2022).
+
+\item Nagel G, Brauner M, Liewald JF, Adeishvili N, Bamberg E, Gottschalk A. Light Activation of Channelrhodopsin-2 in Excitable Cells of Caenorhabditis elegans Triggers Rapid Behavioral Responses. \textit{Curr Biol} \textbf{15}, 2279-2284 (2005).
+
+\item Gunaydin LA, Yizhar O, Berndt A, Sohal VS, Deisseroth K, Hegemann P. Ultrafast optogenetic control. \textit{Nat Neurosci} \textbf{13}, 387-392 (2010).
+
+\item Sugiyama Y, \textit{et al}. Photocurrent attenuation by a single polar-to-nonpolar point mutation of channelrhodopsin-2. \textit{Photochem Photobiol Sci} \textbf{8}, 328-336 (2009).
+
+\item Eisenhauer K, \textit{et al}. In Channelrhodopsin-2 Glu-90 Is Crucial for Ion Selectivity and Is Deprotonated during the Photocycle*. \textit{J Biol Chem} \textbf{287}, 6904-6911 (2012).
+
+\item Berndt A, Lee SY, Ramakrishnan C, Deisseroth K. Structure-Guided Transformation of Channelrhodopsin into a Light-Activated Chloride Channel. \textit{Science} \textbf{344}, 420-424 (2014).
+
+\item Wietek J, \textit{et al}. Conversion of Channelrhodopsin into a Light-Gated Chloride Channel. \textit{Science} \textbf{344}, 409-412 (2014).
+
+\item Berndt A, Yizhar O, Gunaydin LA, Hegemann P, Deisseroth K. Bi-stable neural state switches. \textit{Nat Neurosci} \textbf{12}, 229-234 (2009).
+
+\item Nack M, \textit{et al}. The DC gate in Channelrhodopsin-2: crucial hydrogen bonding interaction between C128 and D156. \textit{Photochem Photobiol Sci} \textbf{9}, 194-198 (2010).
+
+\item Yizhar O, Fenno Lief E, Davidson Thomas J, Mogri M, Deisseroth K. Optogenetics in Neural Systems. \textit{Neuron} \textbf{71}, 9-34 (2011).
+
+\item Berndt A, \textit{et al}. High-efficiency channelrhodopsins for fast neuronal stimulation at low light levels. \textit{Proc Natl Acad Sci} \textbf{108}, 7595-7600 (2011).
+
+\item Kleinlogel S, \textit{et al}. Ultra light-sensitive and fast neuronal activation with the Ca2+-permeable channelrhodopsin CatCh. \textit{Nat Neurosci} \textbf{14}, 513-518 (2011).
+
+\item Lin JY, Knutsen PM, Muller A, Kleinfeld D, Tsien RY. ReaChR: a red-shifted variant of channelrhodopsin enables deep transcranial optogenetic excitation. \textit{Nat Neurosci} \textbf{16}, 1499-1508 (2013).
+
+\item Klapoetke NC, \textit{et al}. Independent optical excitation of distinct neural populations. \textit{Nat Methods} \textbf{11}, 338-346 (2014).
+
+\item Dawydow A, \textit{et al}. Channelrhodopsin-2-XXL, a powerful optogenetic tool for low-light applications. \textit{Proc Natl Acad Sci U S A} \textbf{111}, 13972-13977 (2014).
+
+\item Rajasethupathy P, \textit{et al}. Projections from neocortex mediate top-down control of memory retrieval. \textit{Nature} \textbf{526}, 653-659 (2015).
+
+\item Mager T, \textit{et al}. High frequency neural spiking and auditory signaling by ultrafast red-shifted optogenetics. \textit{Nat Commun} \textbf{9}, 1750 (2018).
+
+\item Oda K, \textit{et al}. Crystal structure of the red light-activated channelrhodopsin Chrimson. \textit{Nat Commun} \textbf{9}, 3949 (2018).
+
+\item Sridharan S, \textit{et al}. High-performance microbial opsins for spatially and temporally precise perturbations of large neuronal networks. \textit{Neuron} \textbf{110}, 1139-1155.e1136 (2022).
+
+\item Scholz N, \textit{et al}. Mechano-dependent signaling by Latrophilin/CIRL quenches cAMP in proprioceptive neurons. \textit{eLife} \textbf{6}, (2017).
+
+\item Kato HE, \textit{et al}. Structural mechanisms of selectivity and gating in anion channelrhodopsins. \textit{Nature} \textbf{561}, 349-354 (2018).
+
+\item Fernandez Lahore RG, \textit{et al}. Calcium-permeable channelrhodopsins for the photocontrol of calcium signalling. \textit{Nat Commun} \textbf{13}, 7844 (2022).
+
+\item Mardinly AR, \textit{et al}. Precise multimodal optical control of neural ensemble activity. \textit{Nat Neurosci} \textbf{21}, 881-893 (2018).
+
+\item Vierock J, \textit{et al}. WiChR, a highly potassium-selective channelrhodopsin for low-light one- and two-photon inhibition of excitable cells. \textit{Sci Adv} \textbf{8}, eadd7729 (2022).
+
+\item Morizumi T, \textit{et al}. Structures of channelrhodopsin paralogs in peptidiscs explain their contrasting K(+) and Na(+) selectivities. \textit{Nat Commun} \textbf{14}, 4365 (2023).
+
+\item Tucker K, Sridharan S, Adesnik H, Brohawn SG. Cryo-EM structures of the channelrhodopsin ChRmine in lipid nanodiscs. \textit{Nat Commun} \textbf{13}, 4842 (2022).
+
+\item Duan X, \textit{et al}. Stabilized Ion Selectivity Corrects Activation Drift in Kalium Channelrhodopsins. \textit{Adv Sci (Weinh)}, e09180 (2025).
+
+\item Duan X, \textit{et al}. Suppression of epileptic seizures by transcranial activation of K(+)-selective channelrhodopsin. \textit{Nat Commun} \textbf{16}, 559 (2025).
+
+\item Alekseev A, \textit{et al}. Efficient and sustained optogenetic control of sensory and cardiac systems. \textit{Nat Biomed Eng}, (2025).
+
+\item Tose AJ, Nava AA, McGrath SN, Mardinly AR, Naka A. WAChRs are excitatory opsins sensitive to indoor lighting. \textit{bioRxiv}, 2025.2009.2012.675947 (2025).
+
+\item Gordeliy VI, \textit{et al}. Molecular basis of transmembrane signalling by sensory rhodopsin II--transducer complex. \textit{Nature} \textbf{419}, 484-487 (2002).
+
+\item Moukhametzianov R, \textit{et al}. Development of the signal in sensory rhodopsin and its transfer to the cognate transducer. \textit{Nature} \textbf{440}, 115-119 (2006).
+
+\item Ishchenko A, \textit{et al}. New Insights on Signal Propagation by Sensory Rhodopsin II/Transducer Complex. \textit{Sci Rep} \textbf{7}, 41811 (2017).
+
+\item Sudo Y, Furutani Y, Kandori H, Spudich JL. Functional Importance of the Interhelical Hydrogen Bond between Thr204 and Tyr174 of Sensory Rhodopsin II and Its Alteration during the Signaling Process*. \textit{J Biol Chem} \textbf{281}, 34239-34245 (2006).
+
+\item Matsunami-Nakamura R, \textit{et al}. Key determinants for signaling in the sensory rhodopsin II/transducer complex are different between Halobacterium salinarum and Natronomonas pharaonis. \textit{FEBS Lett} \textbf{597}, 2334-2344 (2023).
+
+\item Broser M, \textit{et al}. NeoR, a near-infrared absorbing rhodopsin. \textit{Nat Commun} \textbf{11}, 5682 (2020).
+
+\item Marshel JH, \textit{et al}. Cortical layer--specific critical dynamics triggering perception. \textit{Science} \textbf{365}, (2019).
+
+\item Filosof A, Beja O. Bacterial, archaeal and viral-like rhodopsins from the Red Sea. \textit{Environ Microbiol Rep} \textbf{5}, 475-482 (2013).
+
+\item Needham DM, \textit{et al}. A distinct lineage of giant viruses brings a rhodopsin photosystem to unicellular marine predators. \textit{Proc Natl Acad Sci U S A} \textbf{116}, 20574-20583 (2019).
+
+\item Kateriya S, Nagel G, Bamberg E, Hegemann P. ``Vision'' in single-celled algae. \textit{News Physiol Sci} \textbf{19}, 133-137 (2004).
+
+\item Luck M, \textit{et al}. A photochromic histidine kinase rhodopsin (HKR1) that is bimodally switched by ultraviolet and blue light. \textit{J Biol Chem} \textbf{287}, 40083-40090 (2012).
+
+\item Pushkarev A, \textit{et al}. A distinct abundant group of microbial rhodopsins discovered using functional metagenomics. \textit{Nature} \textbf{558}, 595-599 (2018).
+
+\item Inoue K, \textit{et al}. Schizorhodopsins: A family of rhodopsins from Asgard archaea that function as light-driven inward H(+) pumps. \textit{Sci Adv} \textbf{6}, eaaz2441 (2020).
+
+\item Govorunova EG, Sineshchekov OA, Janz R, Liu X, Spudich JL. NEUROSCIENCE. Natural light-gated anion channels: A family of microbial rhodopsins for advanced optogenetics. \textit{Science} \textbf{349}, 647-650 (2015).
+
+\item Kishi KE, Kato HE. Pump-like channelrhodopsins: Not just bridging the gap between ion pumps and ion channels. \textit{Curr Opin Struct Biol} \textbf{79}, 102562 (2023).
+
+\item Luck M, \textit{et al}. Photoreactions of the Histidine Kinase Rhodopsin Ot-HKR from the Marine Picoalga Ostreococcus tauri. \textit{Biochemistry} \textbf{58}, 1878-1891 (2019).
+
+\item Balashov SP, \textit{et al}. Effect of the arginine-82 to alanine mutation in bacteriorhodopsin on dark adaptation, proton release, and the photochemical cycle. \textit{Biochemistry} \textbf{32}, 10331-10343 (1993).
+
+\item Ikeura Y, Shimono K, Iwamoto M, Sudo Y, Kamo N. Arg-72 of pharaonis Phoborhodopsin (Sensory Rhodopsin II) is Important for the Maintenance of the Protein Structure in the Solubilized State. \textit{Photochem Photobiol} \textbf{77}, 96-100 (2003).
+
+\item Vogt A, Guo Y, Tsunoda SP, Kateriya S, Elstner M, Hegemann P. Conversion of a light-driven proton pump into a light-gated ion channel. \textit{Sci Rep} \textbf{5}, 16450 (2015).
+
+\item Buhl E, \textit{et al}. Assessing the Role of R120 in the Gating of CrChR2 by Time-Resolved Spectroscopy from Femtoseconds to Seconds. \textit{J Am Chem Soc} \textbf{145}, 21832-21840 (2023).
+
+\item Kubo M, \textit{et al}. Role of Arg123 in light-driven anion pump mechanisms of pharaonis halorhodopsin. \textit{Photochem Photobiol} \textbf{85}, 547-555 (2009).
+
+\item Louca S, Mazel F, Doebeli M, Parfrey LW. A census-based estimate of Earth's bacterial and archaeal diversity. \textit{PLoS Biol} \textbf{17}, e3000106 (2019).
+
+\item Locey KJ, Lennon JT. Scaling laws predict global microbial diversity. \textit{Proc Natl Acad Sci} \textbf{113}, 5970-5975 (2016).
+
+\item Shen W, Lees JA, Iqbal Z. Efficient sequence alignment against millions of prokaryotic genomes with LexicMap. \textit{Nat Biotechnol}, 1-8 (2025).
+
+\item Nagata T, Inoue K. Rhodopsins at a glance. \textit{J Cell Sci} \textbf{134}, (2021).
+
+\item Morizumi T, \textit{et al}. X-ray Crystallographic Structure and Oligomerization of Gloeobacter Rhodopsin. \textit{Sci Rep} \textbf{9}, 11283 (2019).
+
+\item Brown LS. Fungal rhodopsins and opsin-related proteins: eukaryotic homologues of bacteriorhodopsin with unknown functions. \textit{Photochem Photobiol Sci} \textbf{3}, 555-565 (2004).
+
+\item Sharma AK, Spudich JL, Doolittle WF. Microbial rhodopsins: functional versatility and genetic mobility. \textit{Trends Microbiol} \textbf{14}, 463-469 (2006).
+
+\item Zabelskii D, \textit{et al}. Structure-based insights into evolution of rhodopsins. \textit{Commun Biol} \textbf{4}, 821 (2021).
+
+\item Sasaki J, \textit{et al}. Conversion of bacteriorhodopsin into a chloride ion pump. \textit{Science} \textbf{269}, 73-75 (1995).
+
+\item Hasemi T, Kikukawa T, Kamo N, Demura M. Characterization of a Cyanobacterial Chloride-pumping Rhodopsin and Its Conversion into a Proton Pump. \textit{J Biol Chem} \textbf{291}, 355-362 (2016).
+
+\item Inoue K, Nomura Y, Kandori H. Asymmetric Functional Conversion of Eubacterial Light-driven Ion Pumps. \textit{J Biol Chem} \textbf{291}, 9883-9893 (2016).
+
+\item Takeno Y, \textit{et al}. Structural basis for color tuning and passive ion conductance in red-shifted pump-fold channelrhodopsin ChRO24. \textit{bioRxiv}, 2025.2009.2016.675330 (2025).
+
+\item Shionoya T, \textit{et al}. High Thermal Stability of Oligomeric Assemblies of Thermophilic Rhodopsin in a Lipid Environment. \textit{J Phys Chem B} \textbf{122}, 6945-6953 (2018).
+
+\item Ikuta T, \textit{et al}. Structural insights into the mechanism of rhodopsin phosphodiesterase. \textit{Nat Commun} \textbf{11}, 5605 (2020).
+
+\item Sasaki T, \textit{et al}. Halorhodopsin from Natronomonas pharaonis Forms a Trimer Even in the Presence of a Detergent, Dodecyl-$\beta$-d-maltoside. \textit{Photochem Photobiol} \textbf{85}, 130-136 (2009).
+
+\item \v{S}krinjar P, Eberhardt J, Durairaj J, Schwede T. Have protein-ligand co-folding methods moved beyond memorisation? \textit{bioRxiv}, 2025.2002.2003.636309 (2025).
+
+\item Heo L, Feig M. Multi-state modeling of G-protein coupled receptors at experimental accuracy. \textit{Proteins} \textbf{90}, 1873-1885 (2022).
+
+\item Wohlwend J, \textit{et al}. Boltz-1 Democratizing Biomolecular Interaction Modeling. \textit{bioRxiv}, (2025).
+
+\item Shindyalov IN, Bourne PE. Protein structure alignment by incremental combinatorial extension (CE) of the optimal path. \textit{Protein Eng} \textbf{11}, 739-747 (1998).
+
+\item UniProt C. UniProt: the Universal Protein Knowledgebase in 2023. \textit{Nucleic Acids Res} \textbf{51}, D523-D531 (2023).
+
+\item Keeling PJ, \textit{et al}. The Marine Microbial Eukaryote Transcriptome Sequencing Project (MMETSP): Illuminating the Functional Diversity of Eukaryotic Life in the Oceans through Transcriptome Sequencing. \textit{PLoS Biol} \textbf{12}, e1001889 (2014).
+
+\item Hasegawa-Takano M, \textit{et al}. Cyanorhodopsin-II represents a yellow-absorbing proton-pumping rhodopsin clade within cyanobacteria. \textit{ISME J} \textbf{18}, (2024).
+
+\item Katoh K, Standley DM. MAFFT Multiple Sequence Alignment Software Version 7: Improvements in Performance and Usability. \textit{Mol Biol Evol} \textbf{30}, 772-780 (2013).
+
+\item Steinegger M, Mirdita M, Soding J. Protein-level assembly increases protein sequence recovery from metagenomic samples manyfold. \textit{Nat Methods} \textbf{16}, 603-606 (2019).
+
+\item Carpenter EJ, \textit{et al}. Access to RNA-sequencing data from 1,173 plant species: The 1000 Plant transcriptomes initiative (1KP). \textit{Gigascience} \textbf{8}, (2019).
+
+\item Potter SC, Luciani A, Eddy SR, Park Y, Lopez R, Finn RD. HMMER web server: 2018 update. \textit{Nucleic Acids Res} \textbf{46}, W200-W204 (2018).
+
+\item Li W, Godzik A. Cd-hit: a fast program for clustering and comparing large sets of protein or nucleotide sequences. \textit{Bioinformatics} \textbf{22}, 1658-1659 (2006).
+
+\item Steinegger M, Soding J. MMseqs2 enables sensitive protein sequence searching for the analysis of massive data sets. \textit{Nat Biotechnol} \textbf{35}, 1026-1028 (2017).
+
+\item Crooks GE, Hon G, Chandonia J-M, Brenner SE. WebLogo: A Sequence Logo Generator. \textit{Genome Res} \textbf{14}, 1188-1190 (2004).
+
+\end{enumerate}
+
+
+%-------------------------------------------------------
+\pdfbookmark[2]{Figures}{ms-grn-figures}
+\section*{Figures}
+%-------------------------------------------------------
+
+\includepdf[pages=1,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=2,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=3,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=4,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=5,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=6,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+
+\pdfbookmark[2]{Supplementary Figures}{ms-grn-suppfigures}
+\section*{Supplementary Figures}
+
+\includepdf[pages=7,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=8,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=9,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=10,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=11,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=12,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=13,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=14,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=15,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=16,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
