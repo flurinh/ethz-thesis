@@ -3,7 +3,7 @@
     twoside, openright, titlepage, numbers=noenddot,%
     cleardoublepage=empty,%
     abstractoff,%
-    BCOR=5.5mm, paper=a5, fontsize=10pt,% A5 soft cover
+    BCOR=5.5mm, paper=a5, fontsize=9pt,% A5 soft cover
     %BCOR=5.5mm, paper=17cm:24cm, fontsize=10pt,% 17 cm x 24 cm
     %BCOR=5mm, paper=15.59cm:23.39cm, fontsize=10pt,% Royal soft cover
     %BCOR=0mm, paper=15.24cm:22.86cm, fontsize=10pt,% US-Trade hard cover
@@ -27,11 +27,19 @@
 \pagestyle{scrplain}
 
 %
-% Cover
+% Cover — square PNG scaled to page height, centered, sides clipped
 %
-% Uncomment and adapt these lines if you want to include a cover PDF.
-%
-\includepdf[pages={1,{}}]{cover/crop/cover_front.pdf}
+{% keep changes local
+  \thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture, overlay]
+    \clip (current page.south west) rectangle (current page.north east);
+    \node at (current page.center) {%
+      \includegraphics[height=\paperheight]{cover/cover2.png}%
+    };
+  \end{tikzpicture}%
+  \null\newpage
+  \thispagestyle{empty}\null\newpage
+}
 \cleardoublepage\setcounter{page}{1}
 
 %

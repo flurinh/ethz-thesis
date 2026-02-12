@@ -1,7 +1,7 @@
 \chapter{Discussion}
 \label{ch:discussion}
 
-Three gaps motivated this work. Microbial rhodopsins lacked standardized positional annotation. No method predicted spectral properties across the type~I / type~II divide. And existing tools did not compose into workflows linking sequences, structures, and functional properties while maintaining consistent identity. Each gap required a different solution. Together, those solutions form a system.
+Three gaps motivated this work. Microbial rhodopsins lacked standardized positional annotation. No method predicted spectral properties across the type~I / type~II divide. And existing tools did not compose into workflows linking sequences, structures, and functional properties while maintaining consistent identity.
 
 
 \section{Contributions}
@@ -11,9 +11,9 @@ LAMBDA is the central contribution. It predicts spectral properties across both 
 
 LAMBDA works because of MOGRN. Type~I and type~II opsins diverged billions of years ago and share no detectable sequence similarity outside the binding pocket. A model that takes raw sequence as input cannot learn from both. MOGRN provides the shared vocabulary: a structure-based numbering system for microbial rhodopsins anchored to the Schiff base lysine, analogous to what Ballesteros--Weinstein provides for GPCRs. With both families mapped to standardized coordinates, LAMBDA can represent any opsin binding pocket as a graph aligned on retinal, regardless of fold.
 
-ProtOS made this feasible at scale. Routing 40,000 sequences through GRN annotation, embedding generation, graph construction, and spectral prediction requires managing data across formats and processors without manual intervention. ProtOS handles this through a processor architecture that links sequences, structures, embeddings, properties, and annotations under persistent entity identity. The Opsin Atlas exists because ProtOS could execute the full pipeline for every sequence in the dataset without custom scripting per step.
+ProtOS made this feasible at scale. Routing 40,000 sequences through the full analysis pipeline requires managing data across formats and processors without manual intervention. The Opsin Atlas exists because ProtOS could execute this pipeline for every sequence without custom scripting per step.
 
-ProtOS-MCP completes the stack by removing the programming requirement. The same processors that powered the Opsin Atlas are accessible through natural language. A multi-step spectral engineering workflow---sequence registration, GRN annotation, binding pocket comparison, mutant library creation, LAMBDA screening---ran through four conversational turns, 20 tool calls, no code written.
+ProtOS-MCP completes the stack by removing the programming requirement. The spectral engineering workflow demonstrated in \autoref{ch:protos-mcp} ran through four conversational turns with no code written.
 
 The deeper principle is that standardized coordinates enable cross-family learning. This is not specific to opsins. Any protein superfamily where a conserved functional site spans divergent folds could benefit from the same approach: define a coordinate system anchored to the functional site, represent the site as a graph, and train a model across families that would otherwise be treated separately.
 
@@ -45,6 +45,6 @@ ProtOS is positioned to integrate the next generation of protein AI models as th
 
 This thesis started with a question about spectral tuning and ended with infrastructure for asking questions about proteins. The path was not planned. MOGRN was built because LAMBDA needed a shared coordinate system. ProtOS was built because LAMBDA needed to process 40,000 sequences without drowning in glue code. ProtOS-MCP was built because I got tired of writing the same data loading and annotation scripts for every new analysis---and because the same interface that saved me time also makes these tools accessible to experimentalists who have never written code.
 
-The introduction framed three gaps: no standardized positions for microbial rhodopsins, no cross-family spectral prediction, no composable multi-modal protein data management. MOGRN, LAMBDA, and ProtOS address them respectively. The underlying principle---that standardized structural coordinates enable learning across evolutionary divides---is the scientific contribution. The practical contribution is that a researcher can now go from a protein sequence to a spectral prediction through a conversation.
+MOGRN, LAMBDA, and ProtOS each address one of the gaps framed in the introduction. The underlying principle---that standardized structural coordinates enable learning across evolutionary divides---is the scientific contribution. The practical contribution is that a researcher can now go from a protein sequence to a spectral prediction through a conversation.
 
 What remains is validation. The Opsin Atlas is a collection of hypotheses. Testing them is the next step---and the most exciting one.
