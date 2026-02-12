@@ -80,13 +80,11 @@ Both structures are now in ProtOS, each with extracted pocket residues and ligan
 
 Graphs are mathematical representations of connectivity. Nodes represent entities, edges represent relationships between them. Crucially, graphs can be constructed from either sequence or structure: if you know which positions correspond to nodes, the edges encode whatever relationship you define---sequence proximity, spatial contact, or functional coupling. Residue contact graphs formalize binding pocket topology. Nodes represent residues, edges connect pairs whose C$\alpha$ atoms fall within a distance threshold. The resulting network captures three-dimensional proximity independent of sequence numbering---directly comparable across proteins with different sequences, different folds, or no detectable homology. For machine learning, graph neural networks operate directly on nodes and edges, making pocket graphs a natural bridge between structural coordinates and predictive models.
 
-The Graph Processor generates these graphs from any structure already in ProtOS, optionally restricting to residues near a specified ligand to isolate binding pockets or active sites. The resulting graph is stored and linked to its source structure.
+The Graph Processor generates these graphs from any structure already in ProtOS, optionally restricting to residues near a specified ligand to isolate binding pockets or active sites. The resulting graph is stored and linked to its source structure. Graphs can be generated at atom or residue level, individually or in batch across an entire structure dataset. Nodes can be selected by GRN position rather than residue number, producing graphs where every node carries a transferable label---comparable across proteins regardless of sequence numbering. Conversion to PyTorch Geometric\cite{fey2019} tensors is built in, so that a pocket graph extracted here becomes a direct input to a graph neural network.
 
 \begin{center}
   \includegraphics[width=\textwidth]{\dir/code_graph_proc.jpg}
 \end{center}
-
-Graphs can be generated at atom or residue level, individually or in batch across an entire structure dataset. Nodes can be selected by GRN position rather than residue number, producing graphs where every node carries a transferable label---comparable across proteins regardless of sequence numbering. Conversion to PyTorch Geometric\cite{fey2019} tensors is built in, so that a pocket graph extracted here becomes a direct input to a graph neural network.
 
 \begin{figure}[H]
   \centering
