@@ -1,9 +1,9 @@
 \RequirePackage{fix-cm}
 \documentclass[%
-    twoside, openright, titlepage, numbers=noenddot,%
-    cleardoublepage=empty,%
+    twoside, openany, titlepage, numbers=noenddot,%
+    %cleardoublepage=empty,% disabled: using \clearpage throughout
     abstractoff,%
-    BCOR=5.5mm, paper=a5, fontsize=9pt,% A5 soft cover
+    BCOR=5.5mm, paper=a5, fontsize=8pt,% A5 soft cover
     %BCOR=5.5mm, paper=17cm:24cm, fontsize=10pt,% 17 cm x 24 cm
     %BCOR=5mm, paper=15.59cm:23.39cm, fontsize=10pt,% Royal soft cover
     %BCOR=0mm, paper=15.24cm:22.86cm, fontsize=10pt,% US-Trade hard cover
@@ -27,75 +27,90 @@
 \pagestyle{scrplain}
 
 %
-% Cover — square PNG scaled to page height, centered, sides clipped
+% Cover — JPG scaled to page height, centered, sides clipped
 %
 {% keep changes local
   \thispagestyle{empty}%
   \begin{tikzpicture}[remember picture, overlay]
     \clip (current page.south west) rectangle (current page.north east);
     \node at (current page.center) {%
-      \includegraphics[height=\paperheight]{cover/cover2.png}%
+      \includegraphics[height=\paperheight]{cover/cover2.jpg}%
     };
   \end{tikzpicture}%
   \null\newpage
   \thispagestyle{empty}\null\newpage
 }
-\cleardoublepage\setcounter{page}{1}
+\clearpage\setcounter{page}{1}
 
 %
 % Frontmatter
 %
 
-\include{frontbackmatter/dirtytitlepage}
 \include{frontbackmatter/titlepage}
-\include{frontbackmatter/titleback}
-\cleardoublepage\include{frontbackmatter/dedication}
-\cleardoublepage\include{frontbackmatter/abstract}
-\cleardoublepage\include{frontbackmatter/acknowledgments}
+\clearpage\include{frontbackmatter/dedication}
+\clearpage\include{frontbackmatter/abstract}
 \pagestyle{scrheadings}
-\cleardoublepage\include{frontbackmatter/contents}
+\clearpage\include{frontbackmatter/contents}
 
 %
 % Mainmatter
 %
-\cleardoublepage\pagenumbering{arabic}%
+\clearpage\pagenumbering{arabic}%
 \def\dir{chapters/ch1_introduction}
 \include{\dir/main}
 
-\cleardoublepage%
+\clearpage%
 \def\dir{chapters/ch2_protos}
 \include{\dir/main}
 
-\cleardoublepage%
+\clearpage%
 \def\dir{chapters/ch3_mogrn}
 \include{\dir/main}
 
-\cleardoublepage%
+\clearpage%
 \def\dir{chapters/ch4_lambda}
 \include{\dir/main}
 
-\cleardoublepage%
+\clearpage%
 \def\dir{chapters/ch5_rhodozyme}
 \include{\dir/main}
 
-\cleardoublepage%
+\clearpage%
 \def\dir{chapters/ch6_protos_mcp}
 \include{\dir/main}
 
-\cleardoublepage%
+\clearpage%
 \def\dir{chapters/ch7_discussion}
 \include{\dir/main}
 
 \appendix
-\cleardoublepage%
+\clearpage%
 \def\dir{chapters/appendix}
 \include{\dir/main}
 
-\cleardoublepage\include{frontbackmatter/bibliography}
+\clearpage\include{frontbackmatter/glossary}
+
+\clearpage\include{frontbackmatter/bibliography}
 
 \bookmarksetup{startatroot}
 %\pagenumbering{gobble}
-\cleardoublepage\include{frontbackmatter/cv}
-\cleardoublepage\include{frontbackmatter/publications}
+\clearpage\include{frontbackmatter/acknowledgments}
+\clearpage\include{frontbackmatter/cv}
+\clearpage\include{frontbackmatter/publications}
+
+%
+% Back cover
+%
+\clearpage
+{%
+  \thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture, overlay]
+    \clip (current page.south west) rectangle (current page.north east);
+    \node at (current page.center) {%
+      \includegraphics[height=\paperheight]{cover/cover_backside.png}%
+    };
+  \end{tikzpicture}%
+  \null\newpage
+}
 
 \end{document}

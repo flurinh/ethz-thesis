@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc}
 
 % Languages
-\usepackage[main=english,ngerman]{babel}
+\usepackage[main=english,ngerman,french,italian]{babel}
 
 % classicthesis setup
 \PassOptionsToPackage{%
@@ -60,10 +60,13 @@
 % Figures, tables, and captions
 \usepackage{tabularx}
 \usepackage{ltablex}
+\usepackage{etoolbox}
 \setlength{\extrarowheight}{3pt}
 \newcommand{\tableheadline}[1]{\multicolumn{1}{c}{\spacedlowsmallcaps{#1}}}
 \newcommand{\myfloatalign}{\centering}
 \usepackage{floatrow}
+\DeclareFloatFont{tablefont}{\footnotesize}
+\floatsetup[table]{font=tablefont}
 \usepackage{caption}
 \captionsetup{format=hang,font=small,labelfont={sc},margin=5pt}
 \usepackage{subcaption}
@@ -158,6 +161,9 @@
 \usepackage{scrhack}
 \usepackage{classicthesis}
 
+% Prevent floats from drifting past section boundaries
+\usepackage[section]{placeins}
+
 % Customize text width and length
 
 \KOMAoptions{headinclude=true,footinclude=false}
@@ -175,6 +181,10 @@
 %
 % Font setup
 %
+
+% Override classicthesis Palatino with Times New Roman (TeX Gyre Termes)
+\usepackage{tgtermes}
+\usepackage{mathptmx}
 
 % Micro-typographic extensions
 %\usepackage[protrusion=true,expansion=true]{microtype}
@@ -235,6 +245,7 @@
   \rightskip\leftskip\itshape#1
   \par
   \endgroup
+  \bigskip
 }
 
 % Chapter quotes

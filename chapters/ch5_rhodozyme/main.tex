@@ -1,11 +1,11 @@
 \chapter{Rhodozyme --- Light-Activated Enzyme Design}
 \label{ch:rhodozyme}
 
-\chapterabstract{What follows is a showcase of ProtOS's capabilities---the protein design process demonstrated here is computational and analytically sound. Experimentally feasible? I will answer that at the end. The validation remains outside the scope of my own work.}
+\chapterabstract{What follows is a showcase of ProtOS's capabilities---but more than that, it is what excites me most about my research. Protein design is the natural application of everything ProtOS provides: structure management, annotation, and model integration converge in a pipeline that takes a biological question and produces testable candidates. The validation remains outside the scope of my own work.}
 
-Type~II opsins undergo a conformational change upon photon absorption. In the dark state, the seven transmembrane helices pack tightly, with the intracellular face closed. Photoisomerization of retinal triggers a cascade of sidechain rearrangements at conserved positions---the microswitch residues---that propagate the conformational change from the binding pocket to the intracellular surface. These microswitches are well characterized: they include residues on TM3, TM5, TM6, and TM7 whose rotameric states differ between the inactive and active conformations. The net effect is that TM6 moves \SIrange{10}{14}{\angstrom} outward at its cytoplasmic end\worktodo{Fact-check: some sources report 6--14~\AA{} for TM6 displacement in GPCR activation. Verify the \SIrange{10}{14}{\angstrom} range.}, exposing a cavity that in native rhodopsin binds the G~protein transducin. This cavity is transient, stereochemically defined, and gated by light. The retinal binding pocket---buried in the transmembrane core---determines the absorption wavelength, while the intracellular cavity is a separate surface. If an enzymatic active site could be placed on this intracellular face, the result would be a light-gated enzyme whose activation wavelength is set by the rhodopsin scaffold.
+Type~II opsins undergo a conformational change upon photon absorption. In the dark state, the seven transmembrane helices pack tightly, with the intracellular face closed. Photoisomerization of retinal triggers a cascade of sidechain rearrangements at conserved positions---the microswitch residues---that propagate the conformational change from the binding pocket to the intracellular surface. These microswitches are well characterized\cite{venkatakrishnan2013}: they include residues on TM3, TM5, TM6, and TM7 whose rotameric states differ between the inactive and active conformations. The net effect is that TM6 moves \SIrange{10}{14}{\angstrom} outward at its cytoplasmic end\worktodo{Fact-check: some sources report 6--14~\AA{} for TM6 displacement in GPCR activation. Verify the \SIrange{10}{14}{\angstrom} range.}, exposing a cavity that in native rhodopsin binds the G~protein transducin\cite{palczewski2006}. This cavity is transient, stereochemically defined, and gated by light. The retinal binding pocket---buried in the transmembrane core---determines the absorption wavelength, while the intracellular cavity is a separate surface. If an enzymatic active site could be placed on this intracellular face, the result would be a light-gated enzyme whose activation wavelength is set by the rhodopsin scaffold.
 
-Can such a design be assembled computationally? The core technique---scaffolding a protein backbone around a fixed arrangement of catalytic residues (a theozyme)---was established by the Baker lab in RFdiffusion2 (Ahern et~al., 2025).\worktodo{Fact-check: verify the correct reference for RFdiffusion2---first author, year, and whether it is published or preprint.} Their protocol generates 100 backbone designs per theozyme, fits 8 sequences per design with LigandMPNN, validates all candidates with structure prediction, and picks the best by predicted confidence. We follow the same protocol. The rhodozyme application adds an earlier step and an additional difficulty: the scaffold is not a novel fold but an existing rhodopsin in its active conformation, and the mask that separates fixed from designable regions must preserve both the retinal binding pocket (for light sensitivity) and the theozyme positions (for catalysis). This means candidate selection happens at two stages rather than one---first at theozyme placement (is the geometry compatible with the rhodopsin intracellular face?) and again at validation (does the predicted structure maintain both the rhodopsin fold and the catalytic geometry?). This is where ProtOS contributes. The models are difficult; the data integration between them is not, because ProtOS manages all intermediate representations and dispatches jobs to the Model Manager. The theozyme extraction and placement code (Steps~2--3) required only a small, application-specific addition outside ProtOS's general processor framework.
+Can such a design be assembled computationally? The core technique---scaffolding a protein backbone around a fixed arrangement of catalytic residues (a theozyme)---was established by the Baker lab in RFdiffusion2\cite{ahern2025}.\worktodo{Fact-check: verify the correct reference for RFdiffusion2---first author, year, and whether it is published or preprint.} Their protocol generates 100 backbone designs per theozyme, fits 8 sequences per design with LigandMPNN, validates all candidates with structure prediction, and picks the best by predicted confidence. We follow the same protocol. The rhodozyme application adds an earlier step and an additional difficulty: the scaffold is not a novel fold but an existing rhodopsin in its active conformation, and the mask that separates fixed from designable regions must preserve both the retinal binding pocket (for light sensitivity) and the theozyme positions (for catalysis). This means candidate selection happens at two stages rather than one---first at theozyme placement (is the geometry compatible with the rhodopsin intracellular face?) and again at validation (does the predicted structure maintain both the rhodopsin fold and the catalytic geometry?). This is where ProtOS contributes. The models are difficult; the data integration between them is not, because ProtOS manages all intermediate representations and dispatches jobs to the Model Manager. The theozyme extraction and placement code (Steps~2--3) required only a small, application-specific addition outside ProtOS's general processor framework.
 
 The design proceeds in six steps. Each step can produce multiple outputs that fan out into the next: the geometric search yielded 8 candidate placements, of which we selected 2 based on geometric quality and helix involvement; for each we generated 50 backbone designs with RFdiffusion, sampled 8 sequences per design with LigandMPNN, and predicted all resulting candidates with Boltz2. For placement~00, this produced 50 backbone designs, 405 sequences (from 45 successful designs), and 307 Boltz2 structure predictions.
 
@@ -13,11 +13,11 @@ The design proceeds in six steps. Each step can produce multiple outputs that fa
 \section{Step 1 --- Starting Structures}
 \label{sec:rhodozyme-starting}
 
-Three structures are required. The first is a rhodopsin in its active conformation---metarhodopsin~II (PDB: 3PQR), which captures the open intracellular state with TM6 displaced outward. The dark-state structure of the same protein (PDB: 1U19, bovine rhodopsin at \SI{2.2}{\angstrom}) serves as a reference for the conformational change: superimposing the two reveals the TM5/TM6 displacement that creates the intracellular cavity. The second is a reference enzyme bound to its substrate in a catalytic intermediate. We use bovine trypsin (PDB: 2AGE), an acyl-enzyme intermediate at \SI{1.15}{\angstrom} resolution with succinyl-AAPR covalently bound to the catalytic serine.\worktodo{Fact-check: verify PDB 2AGE is bovine trypsin with succinyl-AAPR at \SI{1.15}{\angstrom} resolution.} This structure captures the triad geometry mid-catalysis---Ser195, His57, and Asp102 in their active arrangement, with the substrate positioned at the reaction center. The enzyme provides the catalytic geometry to be transplanted; the rhodopsin provides the scaffold that gates access to it.
+Three structures are required. The first is a rhodopsin in its active conformation---metarhodopsin~II (PDB: 3PQR\cite{choe2011}), which captures the open intracellular state with TM6 displaced outward. The dark-state structure of the same protein (PDB: 1U19\cite{okada2004}, bovine rhodopsin at \SI{2.2}{\angstrom}) serves as a reference for the conformational change: superimposing the two reveals the TM5/TM6 displacement that creates the intracellular cavity. The second is a reference enzyme bound to its substrate in a catalytic intermediate. We use bovine trypsin (PDB: 2AGE\cite{radisky2006}), an acyl-enzyme intermediate at \SI{1.15}{\angstrom} resolution with succinyl-AAPR covalently bound to the catalytic serine.\worktodo{Fact-check: verify PDB 2AGE is bovine trypsin with succinyl-AAPR at \SI{1.15}{\angstrom} resolution.} This structure captures the triad geometry mid-catalysis---Ser195, His57, and Asp102 in their active arrangement, with the substrate positioned at the reaction center. The enzyme provides the catalytic geometry to be transplanted; the rhodopsin provides the scaffold that gates access to it.
 
-\begin{figure}[tb]
+\begin{figure}[H]
   \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_5_1.pdf}
+  \includegraphics[width=\textwidth]{\dir/fig_rhodozyme_input.jpg}
   \caption[Input structures and the design premise]{%
     Input structures and the design premise.
     (A)~Dark-state bovine rhodopsin (1U19, gray) superimposed with active-state metarhodopsin~II (3PQR, terracotta), showing TM5/TM6 displacement and the intracellular cavity that opens upon activation. Retinal in rust.
@@ -33,9 +33,9 @@ The theozyme is the minimal catalytic unit: the three sidechain positions that p
 
 The catalytic triad in 2AGE shows the characteristic hydrogen-bond relay: the Ser195 hydroxyl is \SI{3.04}{\angstrom} from His57~N$\varepsilon$2, and His57~N$\delta$1 is \SI{2.75}{\angstrom} from Asp102~O$\delta$2. These functional-atom distances define the active geometry. The C$\alpha$ triangle that supports this arrangement has sides of \SI{8.3}{\angstrom} (Ser195--His57), \SI{6.5}{\angstrom} (His57--Asp102), and \SI{10.1}{\angstrom} (Ser195--Asp102).\worktodo{Fact-check: verify all theozyme distances (C$\alpha$ triangle and functional-atom distances) against PDB 2AGE coordinates.}
 
-\begin{figure}[tb]
+\begin{figure}[H]
   \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_5_2.pdf}
+  \includegraphics[width=0.75\textwidth]{\dir/fig_theozyme_extraction.jpg}
   \caption[Theozyme extraction]{%
     Theozyme extraction. The catalytic triad shown in the trypsin active site (gray cartoon) with the geometric abstraction overlaid: C$\alpha$ positions as spheres, C$\alpha$$\to$C$\beta$ direction vectors as arrows, pairwise distances as dashed lines. Distances: Ser195--His57 = \SI{8.3}{\angstrom}, His57--Asp102 = \SI{6.5}{\angstrom}, Ser195--Asp102 = \SI{10.1}{\angstrom}. This triangle and these vectors are the input to the placement search---everything else about trypsin is discarded.}
   \label{fig:theozyme-extraction}
@@ -49,11 +49,11 @@ The intracellular face of active rhodopsin is identified using GRN annotation. R
 
 An additional constraint requires at least one residue on TM5 or TM6---the helices that move during activation. This ensures that the catalytic geometry depends on the active conformation: in the dark state, with TM6 packed inward, the triad distances break. The enzyme turns on with light and off without it.
 
-This step has no equivalent in the Baker lab protocol. Ahern et~al.\ (2025) start from a theozyme and generate a novel scaffold around it; the placement is implicit in the diffusion process. Here, the scaffold is fixed---we must find positions in an existing structure that can accommodate the catalytic geometry. The search produced 8 candidates. We selected placements~0 and~2 based on triangle RMSD, C$\beta$ vector alignment, and the involvement of TM6 residues. For placement~00, the theozyme maps to Ser-230, His-245, and Asp-250 on the intracellular face of 3PQR.\worktodo{Fact-check: verify these residue numbers against the 3PQR structure.} The placement reproduces the trypsin C$\alpha$ triangle exactly (\SI{8.3}{\angstrom} / \SI{6.5}{\angstrom} / \SI{10.1}{\angstrom}) and preserves the hydrogen-bond distances (Ser--His \SI{3.04}{\angstrom}, His--Asp \SI{2.75}{\angstrom}).
+This step has no equivalent in the Baker lab protocol. Ahern et~al.\ start from a theozyme and generate a novel scaffold around it; the placement is implicit in the diffusion process. Here, the scaffold is fixed---we must find positions in an existing structure that can accommodate the catalytic geometry. The search produced 8 candidates. We selected placements~0 and~2 based on triangle RMSD, C$\beta$ vector alignment, and the involvement of TM6 residues. For placement~00, the theozyme maps to Ser-230, His-245, and Asp-250 on the intracellular face of 3PQR.\worktodo{Fact-check: verify these residue numbers against the 3PQR structure.} The placement reproduces the trypsin C$\alpha$ triangle exactly (\SI{8.3}{\angstrom} / \SI{6.5}{\angstrom} / \SI{10.1}{\angstrom}) and preserves the hydrogen-bond distances (Ser--His \SI{3.04}{\angstrom}, His--Asp \SI{2.75}{\angstrom}).
 
-\begin{figure}[tb]
+\begin{figure}[H]
   \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_5_3.pdf}
+  \includegraphics[width=\textwidth]{\dir/fig_theozyme_placement.jpg}
   \caption[Theozyme placement on the rhodopsin scaffold]{%
     Theozyme placement on the rhodopsin scaffold.
     (A)~The placement structure (3PQR with theozyme mutations) viewed from the intracellular face. TM helices in gray, theozyme residues (Ser-230, His-245, Asp-250) shown as sticks with C$\alpha$ spheres in green. Retinal in rust.
@@ -65,15 +65,15 @@ This step has no equivalent in the Baker lab protocol. Ahern et~al.\ (2025) star
 \section{Step 4 --- Backbone Design with RFdiffusion}
 \label{sec:rhodozyme-rfdiffusion}
 
-Point mutations at the matched positions would introduce the correct residues but not the correct backbone geometry. The surrounding loops and helix termini must accommodate the theozyme. RFdiffusion generates backbone designs under constraints.
+Point mutations at the matched positions would introduce the correct residues but not the correct backbone geometry. The surrounding loops and helix termini must accommodate the theozyme. RFdiffusion\cite{watson2023} generates backbone designs under constraints.
 
 The mask defines what is fixed and what is designed. The locked regions comprise the TM helices (TM1--TM2, TM3, TM4--TM5, TM6--TM7), preserving the transmembrane core, the retinal binding pocket, and the microswitch residues that mediate the activation mechanism---210 residues in total. The three theozyme positions (Ser-230, His-245, Asp-250) are locked with their sidechain atoms explicitly constrained. Between these locked segments, 116 residues are free for RFdiffusion to redesign---these correspond to the intracellular loops (ICL1--3), the theozyme-surrounding loops, and the C-terminal region. Retinal and the tetrapeptide substrate are included as ligand context.
 
-We generate 50 designs per placement. The smaller number (vs.\ 100 in Ahern et~al.) reflects the additional constraint: the locked TM scaffold reduces the conformational search space relative to unconstrained scaffolding, but also makes each design harder to solve.
+We generate 50 designs per placement. The number reflects a practical trade-off: each placement fans out into 50 designs $\times$ 8 sequences $\times$ structure predictions, and evaluating multiple placements multiplies this cost.
 
-\begin{figure}[tb]
+\begin{figure}[H]
   \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_5_4.pdf}
+  \includegraphics[width=0.45\textwidth]{\dir/fig_rfdiffusion_mask.jpg}
   \caption[RFdiffusion mask]{%
     RFdiffusion mask. The mask applied to the rhodopsin scaffold: TM helices and theozyme positions locked (gray), intracellular loops free for design (terracotta). Theozyme residues marked as green spheres. Retinal (rust) sits in the locked transmembrane core, unchanged by design. 210 residues are locked; 116 are designed.}
   \label{fig:rfdiffusion-mask}
@@ -83,13 +83,13 @@ We generate 50 designs per placement. The smaller number (vs.\ 100 in Ahern et~a
 \section{Step 5 --- Sequence Design with LigandMPNN}
 \label{sec:rhodozyme-ligandmpnn}
 
-Each RFdiffusion backbone specifies a fold but not a sequence. LigandMPNN generates amino acid sequences compatible with the designed backbone while accounting for the retinal cofactor and the substrate ligand. The theozyme residues (Ser, His, Asp at the fixed positions) are provided as constraints---LigandMPNN designs the rest.
+Each RFdiffusion backbone specifies a fold but not a sequence. LigandMPNN\cite{dauparas2025} generates amino acid sequences compatible with the designed backbone while accounting for the retinal cofactor and the substrate ligand. The theozyme residues (Ser, His, Asp at the fixed positions) are provided as constraints---LigandMPNN designs the rest.
 
-Following Ahern et~al.\ (2025), 8 sequences are sampled per backbone at temperature $T=0.1$. The retinal SMILES and substrate SMILES are included in the LigandMPNN input so that the designed sequence accounts for both the cofactor that enables light activation and the substrate that the enzyme should bind. For placement~00, this produced 405 sequences across 45 successful backbone designs.\worktodo{Consistency: $45 \times 8 = 360$, not 405. Verify the actual count---did some designs yield more than 8 sequences?} The top candidate has 72.7\% sequence identity to wild-type rhodopsin (3PQR), with 89 mutations concentrated in the redesigned loop regions. The locked TM helices retain the native sequence almost entirely.
+Following Ahern et~al., 8 sequences are sampled per backbone at temperature $T=0.1$. The retinal SMILES and substrate SMILES are included in the LigandMPNN input so that the designed sequence accounts for both the cofactor that enables light activation and the substrate that the enzyme should bind. For placement~00, this produced 405 sequences across 45 successful backbone designs.\worktodo{Consistency: $45 \times 8 = 360$, not 405. Verify the actual count---did some designs yield more than 8 sequences?} The top candidate has 72.7\% sequence identity to wild-type rhodopsin (3PQR), with 89 mutations concentrated in the redesigned loop regions. The locked TM helices retain the native sequence almost entirely.
 
-\begin{figure}[tb]
+\begin{figure}[H]
   \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_5_5.pdf}
+  \includegraphics[width=\textwidth]{\dir/fig_sequence_design.jpg}
   \caption[Sequence design]{%
     Sequence design. Sequence alignment of the top candidate against wild-type rhodopsin (3PQR). Identical positions in gray, mutations highlighted. Mutations cluster in the redesigned loop regions; the TM helices are largely unchanged. Theozyme positions (Ser-230, His-245, Asp-250) marked.}
   \label{fig:sequence-design}
@@ -99,7 +99,7 @@ Following Ahern et~al.\ (2025), 8 sequences are sampled per backbone at temperat
 \section{Step 6 --- Structure Prediction with Boltz2}
 \label{sec:rhodozyme-boltz2}
 
-Each designed sequence is predicted with Boltz2 to evaluate whether the intended fold and catalytic geometry are maintained. The prediction includes the protein chain, retinal (as covalent cofactor), and substrate. This is the second filtering stage. Ahern et~al.\ (2025) rank candidates by predicted confidence; we evaluate on two criteria specific to the rhodozyme constraint.
+Each designed sequence is predicted with Boltz2\cite{wohlwend2024}\worktodo{Citation check: the bib entry \texttt{wohlwend2024} is for Boltz-1 (bioRxiv 2024). If Boltz-2 was used, update to the Boltz-2 paper (DOI: 10.1101/2025.06.14.659707).} to evaluate whether the intended fold and catalytic geometry are maintained. The prediction includes the protein chain, retinal (as covalent cofactor), and substrate. This is the second filtering stage. Ahern et~al.\ rank candidates by predicted confidence; we evaluate on two criteria specific to the rhodozyme constraint.
 
 The first criterion is theozyme alignment. We superimpose each predicted structure onto the placement from Step~3, aligning only the three theozyme residues (all atoms, not just C$\alpha$), and measure the RMSD. This tests whether the catalytic geometry survived the design-predict cycle. Across all 307 predictions, we rank candidates by this theozyme all-atom RMSD. The second criterion is pLDDT of the Boltz2 prediction, reported per-residue. We examine pLDDT separately for the locked regions (which should score high, as they reproduce known structure) and the designed regions (where low confidence indicates the model is uncertain about the backbone).
 
@@ -109,13 +109,13 @@ An unexpected observation emerged from inspecting the validated designs. Because
 
 We selected the top candidate by balancing theozyme RMSD (\SI{2.44}{\angstrom} all-atom, \SI{0.51}{\angstrom} C$\alpha$-only, rank~6 of 307) against the highest global pLDDT in the top~10 (91.7). The overall backbone RMSD to the parent rhodopsin is \SI{0.84}{\angstrom}, confirming that the fold is preserved.\worktodo{Fact-check: verify pLDDT values (91.7, 94.9, 85.6, 72.1) and RMSD values (\SI{0.84}{\angstrom}, \SI{2.44}{\angstrom}) from the actual Boltz2 output files.} The pLDDT breakdown shows high confidence in the locked TM core (94.9 mean) and good confidence in the designed loops (85.6 mean), with the theozyme residues at 72.1---lower, as expected for residues at a designed interface.
 
-The catalytic geometry in the predicted structure shows the Ser--His distance at \SI{4.03}{\angstrom} and the His--Asp distance at \SI{3.18}{\angstrom}, compared to \SI{3.04}{\angstrom} and \SI{2.75}{\angstrom} in the reference placement. These distances are longer than the ideal hydrogen-bond geometry but within the range that could be optimized by further design iterations or molecular dynamics relaxation.
+The catalytic geometry in the predicted structure shows the Ser--His distance at \SI{4.03}{\angstrom} and the His--Asp distance at \SI{3.18}{\angstrom}, compared to \SI{3.04}{\angstrom} and \SI{2.75}{\angstrom} in the reference placement. These distances are longer than the ideal hydrogen-bond geometry and would require further optimization---through additional design iterations, molecular dynamics relaxation, or experimental directed evolution---to achieve catalytically competent contacts.
 
-Because the retinal binding pocket is preserved by the mask, the Schiff base linkage to Lys-296 is intact in the predicted structure. LAMBDA can predict the spectral properties of retained candidates---the rhodozyme absorbs at the same wavelength as the parent rhodopsin.
+Because the retinal binding pocket is preserved by the mask, the Schiff base linkage to Lys-296 is intact in the predicted structure. LAMBDA can predict the spectral properties of retained candidates---because the binding pocket is unchanged, the rhodozyme is expected to absorb at the same wavelength as the parent rhodopsin.
 
-\begin{figure}[tb]
+\begin{figure}[H]
   \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_5_6.pdf}
+  \includegraphics[width=\textwidth]{\dir/fig_boltz2_evaluation.jpg}
   \caption[Boltz2 evaluation of the top candidate]{%
     Boltz2 evaluation of the top candidate.
     (A)~Predicted structure overlaid on the parent rhodopsin. Gray: reference TM core (locked regions from 3PQR). Terracotta: designed loop regions (Boltz2 prediction). Retinal and Schiff base Lys-296 in rust. Overall backbone RMSD: \SI{0.84}{\angstrom}.

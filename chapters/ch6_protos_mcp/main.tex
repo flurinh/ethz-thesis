@@ -1,73 +1,24 @@
 \chapter{ProtOS-MCP --- Talk to Your Proteins}
 \label{ch:protos-mcp}
 
-ProtOS requires Python. Every workflow in this thesis required writing code. The experimentalist who understands the biology cannot run these analyses without a programmer. The infrastructure exists; the barrier is programming itself.
+\chapterabstract{During this PhD, AI went from barely functional to a daily coding companion. Coding is about solving problems, not typing---but the barrier to entry remains real. ProtOS is powerful, yet the future lies in making advanced computational frameworks accessible to any structural biologist or bioinformatician. MCP is where lab scientists and computational researchers meet.}
 
-ProtOS-MCP removes that barrier. ProtOS-MCP exposes the same processors through natural language: a researcher describes what they want, and the system executes it. The contribution is not the natural language interface itself---large language models that call tools are not new---but the domain-specific infrastructure behind it. ProtOS provides the tools; the language model makes them accessible to non-programmers.
+ProtOS requires Python, which limits access for researchers who cannot code. An experimentalist who asks ``which residues contact retinal in this structure?'' understands what they want; they cannot get it without a programmer. ProtOS-MCP removes that barrier by exposing the same processors through natural language: a researcher describes what they want, and the system executes it. The contribution is not the natural language interface itself---large language models that call tools are not new---but the domain-specific infrastructure behind it.
 
+The Model Context Protocol (MCP)\cite{anthropic2024mcp}, developed by Anthropic, standardizes how language models discover and invoke external tools through typed schemas. A language model generates text; it does not load structures, align sequences, or predict absorption spectra. MCP provides a structured interface through which the model can perform these operations by selecting the appropriate tool, populating its parameters, and interpreting the result.
 
-
-\section{The Model Context Protocol}
-\label{sec:mcp-architecture}
-
-A language model generates text. It does not load structures, align sequences, or predict absorption spectra. To perform these operations, it needs tools---structured interfaces that accept parameters and return results. When a researcher asks ``predict the absorption of this opsin,'' the model recognizes the intent, selects the appropriate tool, populates its parameters, and interprets the result.
-
-The Model Context Protocol (MCP), developed by Anthropic, standardizes how language models discover and invoke external tools through typed schemas. The model never accesses files, databases, or compute resources directly---it operates entirely through the tool interface.
-
-ProtOS-MCP implements this protocol, exposing each processor's operations as MCP tools---over 120 in total, organized by processor category (\autoref{ch:appendix}).\worktodo{Fact-check: count the actual tools in the appendix tables---currently 8+9+11+7+8+7+8 = 58 listed. Either the appendix is incomplete or ``over 120'' includes unlisted tools.}
-
-\autoref{fig:mcp-architecture} shows the architecture. The researcher types a question in natural language. The language model interprets it and issues one or more MCP tool calls to the local ProtOS server. The server executes each call against the ProtOS installation and returns structured JSON. The model synthesizes the results into a natural language response. Critically, ProtOS-MCP runs locally. No protein data leaves the researcher's machine---only the conversational text passes through external servers.
-
-\begin{figure}[tb]
+\begin{figure}[H]
   \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_6_1.pdf}
+  \includegraphics[width=\textwidth]{\dir/fig_mcp_architecture.jpg}
   \caption[ProtOS-MCP architecture]{%
-    ProtOS-MCP architecture. The researcher types a question in natural language. The language model interprets it and issues MCP tool calls to the local ProtOS server. The server executes each call and returns structured JSON. The model synthesizes the results into a natural language response. All protein data remains local.}
+    ProtOS-MCP architecture. A natural language question is routed through MCP tool calls to the local ProtOS server, which returns structured JSON. The language model synthesizes results into a response. All protein data remains local.}
   \label{fig:mcp-architecture}
 \end{figure}
 
-The language model maintains conversational context and orchestrates the workflow, deciding which tools to call next.
+\autoref{fig:mcp-architecture} shows the ProtOS-MCP architecture. The researcher types a question in natural language. The language model interprets it and issues one or more MCP tool calls to the local ProtOS server. The server executes each call against the ProtOS installation and returns structured JSON. The model synthesizes the results into a natural language response. Critically, ProtOS-MCP runs locally---no protein data leaves the researcher's machine; only the conversational text passes through external servers.
 
+To demonstrate the system, the rhodozyme sequence from \autoref{ch:rhodozyme} served as a starting point. Its retinal-binding domain is preserved from the parent rhodopsin, so spectral tuning through binding pocket mutations remains possible without disrupting the designed catalytic site. The question posed through conversation: can the rhodozyme's predicted absorption be shifted toward longer wavelengths by transplanting binding pocket residues from the human long-wave sensitive opsin?
 
-\section{Redshifting the Rhodozyme}
-\label{sec:mcp-redshifting}
+The complete conversation (\autoref{sec:appendix-mcp-conversation}) proceeded in four turns, involving 20 tool calls across five processors.\worktodo{Fact-check: verify all MCP session numbers (20 tool calls, 20 divergent positions, 11 tool calls in turn~4, 7 mutations, \SI{496}{\nano\metre} $\to$ \SI{514}{\nano\metre}) against the actual session log.} No code was written. The model first reviewed its capabilities, then ingested the rhodozyme FASTA file, predicted its absorption at \SI{496}{\nano\metre} for 11-\textit{cis} retinal using LAMBDA, and finally executed a multi-step redshift engineering workflow: comparing binding pockets at GRN positions, screening 20 single-point mutants, and performing a greedy cumulative walk that peaked at seven mutations with a predicted shift to \SI{514}{\nano\metre}. The model autonomously decomposed the complex fourth prompt into 11 sequential tool calls with correct dependencies---GRN annotation before pocket comparison before mutant design---without further prompting.
 
-To demonstrate ProtOS-MCP, the rhodozyme sequence from \autoref{ch:rhodozyme} serves as a starting point. The computational design produced a protein sequence---a FASTA file---whose retinal-binding domain is preserved from the parent rhodopsin. Spectral tuning of that domain remains possible: mutations in the chromophore environment can shift the absorption wavelength without disrupting the designed catalytic site on the intracellular face. The question posed through conversation: can the rhodozyme's predicted absorption be shifted toward longer wavelengths by transplanting binding pocket residues from the human long-wave sensitive opsin?
-
-\autoref{fig:mcp-conversation} shows the complete conversation. It proceeded in four turns, involving 20 tool calls across five processors. No code was written.
-
-\textbf{Turn~1 --- Orientation.} The researcher asks the system to review its capabilities. The model queries the ProtOS guide and returns a structured summary of all processor modules. This reflects how a researcher would naturally begin: understanding what tools are available before deciding what to do.
-
-\textbf{Turn~2 --- Data ingestion.} The researcher provides a FASTA file containing the rhodozyme sequence. The model scans the input directory, registers the file as a sequence entity, and confirms it is now tracked in ProtOS.
-
-\textbf{Turn~3 --- Spectral prediction.} The researcher asks to run LAMBDA. Before executing, the model reviews how the pipeline works and inspects the sequence. It correctly identifies the rhodozyme as a type~II opsin from its N-terminal motif, selects the appropriate protein family parameters, and runs the prediction. The pipeline completes automatically---GRN assignment, embedding generation, and spectral prediction in a single call. The predicted absorption: \SI{496}{\nano\metre} for 11-\textit{cis} retinal, consistent with the rhodopsin family.
-
-\textbf{Turn~4 --- Rational redshift engineering.} The researcher poses a complex challenge: compare the rhodozyme's binding pocket to the human long-wave opsin at GRN positions, create single-point mutants at divergent sites, screen them with LAMBDA, then perform a greedy cumulative walk to find the combination that maximizes redshift. The model decomposes this into five discrete steps---locating the reference sequence, annotating both with GRN, comparing binding pockets, screening 20 single mutants, and running the cumulative walk---executing 11 tool calls without further prompting. It identifies 20 divergent pocket positions, screens each substitution individually, then builds cumulative variants in order of predicted redshift. The walk peaks at seven mutations with a predicted shift from \SI{496}{\nano\metre} to \SI{514}{\nano\metre} before additional mutations erode the effect.\worktodo{Fact-check: verify all MCP session numbers (20 tool calls, 20 divergent positions, 11 tool calls in turn~4, 7 mutations, \SI{496}{\nano\metre} $\to$ \SI{514}{\nano\metre}) against the actual session log.} The optimal variant is exported as FASTA.
-
-\begin{figure}[tb]
-  \centering
-  % \includegraphics[width=\textwidth]{\dir/figure_6_2.pdf}
-  \caption[ProtOS-MCP conversation: redshifting the rhodozyme]{%
-    ProtOS-MCP conversation: redshifting the rhodozyme. Four conversational turns involving 20 tool calls across five processors.
-    (a)~Turn~1: orientation and capability review.
-    (b)~Turn~2: data ingestion of rhodozyme FASTA.
-    (c)~Turn~3: spectral prediction ($\lambda_\text{max} = \SI{496}{\nano\metre}$).
-    (d)~Turn~4: rational redshift engineering through binding pocket comparison, single-mutant screening, and greedy cumulative walk (peak: \SI{514}{\nano\metre} at 7 mutations).}
-  \label{fig:mcp-conversation}
-\end{figure}
-
-
-\section{Discussion}
-\label{sec:mcp-discussion}
-
-The value is not the resulting design---which, like all computational designs in this thesis, awaits experimental validation. The value is what the interaction reveals about the system.
-
-Four conversational turns compressed a multi-step spectral engineering analysis into natural language. The equivalent Python script would require detailed knowledge of the ProtOS API; the conversation required none of it.
-
-The model also applied domain knowledge---such as identifying the protein family from the sequence---that was not programmed into the MCP tools.
-
-The limitations are straightforward. The workflow depends on the language model reasoning correctly about tool selection and parameter values. For the complex fourth turn, the model chained 11 tool calls with dependencies---GRN annotation had to complete before pocket positions could be queried, which had to complete before mutants could be designed. A model that misunderstands one step propagates errors through the rest. In this session, the reasoning was correct. In others---particularly with less capable models or more ambiguous requests---failures occur. The workflow dataset in the Supplementary Materials provides a benchmark for measuring this reliability.
-
-ProtOS-MCP does not replace programming. Analyses requiring custom logic, conditional branching, or operations not exposed as tools still require code. It lowers the barrier for the common case: a researcher with a biological question and data that fits the processor workflows. For the experimentalist who cannot write Python, the spectral engineering analysis shown here becomes accessible. For the bioinformatician who needs a quick exploration, it saves time.
-
-Together, ProtOS and MCP close the loop: from protein sequence to spectral prediction, through a conversation.\worktodo{Author note~[j]: expand on privacy implications.}
+The value is not the resulting design, which awaits experimental validation. Four conversational turns compressed a multi-step spectral engineering analysis that would otherwise require detailed knowledge of the ProtOS API. The model also applied domain knowledge---such as identifying the protein family from the sequence---that was not programmed into the MCP tools. The limitations are equally clear: the workflow depends on the language model reasoning correctly about tool selection and parameter values, and a model that misunderstands one step propagates errors through the rest. ProtOS-MCP does not replace programming---analyses requiring custom logic or operations not exposed as tools still require code---but it lowers the barrier for the common case: a researcher with a biological question and data that fits the processor workflows.\worktodo{Author note~[j]: expand on privacy implications.}
