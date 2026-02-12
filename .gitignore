@@ -10,6 +10,9 @@ ltxpng/
 # Python stuff
 *.py[cod]
 
+# Thesis text exports
+Thesis_*.txt
+
 # Temps
 *.*~
 *.bak

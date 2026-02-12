@@ -1,7 +1,7 @@
 \chapter{Discussion}
 \label{ch:discussion}
 
-The introduction identified three gaps: microbial rhodopsins lacked the standardized positional annotation that enabled systematic GPCR comparison, no method predicted spectral properties across the type~I and type~II divide, and existing tools did not compose into workflows linking sequences, structures, and functional properties while maintaining consistent identity. Each gap required a different solution. Together, those solutions form a system.
+Three gaps motivated this work. Microbial rhodopsins lacked standardized positional annotation. No method predicted spectral properties across the type~I / type~II divide. And existing tools did not compose into workflows linking sequences, structures, and functional properties while maintaining consistent identity. Each gap required a different solution. Together, those solutions form a system.
 
 
 \section{Contributions}
@@ -13,7 +13,7 @@ LAMBDA works because of MOGRN. Type~I and type~II opsins diverged billions of ye
 
 ProtOS made this feasible at scale. Routing 40,000 sequences through GRN annotation, embedding generation, graph construction, and spectral prediction requires managing data across formats and processors without manual intervention. ProtOS handles this through a processor architecture that links sequences, structures, embeddings, properties, and annotations under persistent entity identity. The Opsin Atlas exists because ProtOS could execute the full pipeline for every sequence in the dataset without custom scripting per step.
 
-ProtOS-MCP completes the stack by removing the programming requirement. The same processors that powered the Opsin Atlas are accessible through natural language. \autoref{ch:protos-mcp} demonstrated this on the rhodozyme: a multi-step spectral engineering workflow---sequence registration, GRN annotation, binding pocket comparison, mutant library creation, LAMBDA screening---ran through four conversational turns, 20 tool calls, no code written.
+ProtOS-MCP completes the stack by removing the programming requirement. The same processors that powered the Opsin Atlas are accessible through natural language. A multi-step spectral engineering workflow---sequence registration, GRN annotation, binding pocket comparison, mutant library creation, LAMBDA screening---ran through four conversational turns, 20 tool calls, no code written.
 
 The deeper principle is that standardized coordinates enable cross-family learning. This is not specific to opsins. Any protein superfamily where a conserved functional site spans divergent folds could benefit from the same approach: define a coordinate system anchored to the functional site, represent the site as a graph, and train a model across families that would otherwise be treated separately.
 
@@ -35,7 +35,7 @@ More broadly, tools reduce barriers but do not replace judgment. A researcher us
 
 Experimental validation of LAMBDA is the most impactful next step. Characterizing even a small subset of Opsin Atlas candidates---selected for maximal predicted spectral diversity---would test whether the model captures real spectral tuning physics or has learned correlations that do not generalize to uncharacterized sequences. Positive results would transform LAMBDA from a screening tool into a framework for understanding color tuning. Negative results would identify where the model fails and guide retraining.
 
-For optogenetics, the atlas identifies specific design targets: red-shifted opsins for deeper tissue penetration, spectrally separated pairs for multiplexed control, and sequences with large dark-to-activated spectral separation for bistable tools. The rhodozyme concept from \autoref{ch:rhodozyme}---coupling light activation to enzymatic function---extends this further. Color-tuned rhodozymes, each responding to a different wavelength, would enable sequential catalysis triggered by different colors of light. These remain computational designs, but the infrastructure to iterate on them exists.
+For optogenetics, the atlas identifies specific design targets: red-shifted opsins for deeper tissue penetration, spectrally separated pairs for multiplexed control, and sequences with large dark-to-activated spectral separation for bistable tools. The rhodozyme concept---coupling light activation to enzymatic function---extends this further. Color-tuned rhodozymes, each responding to a different wavelength, would enable sequential catalysis triggered by different colors of light. These remain computational designs, but the infrastructure to iterate on them exists.
 
 ProtOS is positioned to integrate the next generation of protein AI models as they arrive. RFdiffusion2, Boltz, and LigandMPNN are already accessible through the Model Manager. As these models mature and new ones emerge, the processor architecture and MCP interface remain stable---new capabilities become available through conversation without requiring users to learn new APIs.
 
