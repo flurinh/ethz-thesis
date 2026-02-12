@@ -51,18 +51,31 @@
 % Mainmatter
 %
 \cleardoublepage\pagenumbering{arabic}%
-\def\dir{chapters/introduction}
+\def\dir{chapters/ch1_introduction}
 \include{\dir/main}
 
 \cleardoublepage%
-\def\dir{chapters/sample-chapter}
+\def\dir{chapters/ch2_protos}
 \include{\dir/main}
 
-% Include some blind text
-\Blinddocument
+\cleardoublepage%
+\def\dir{chapters/ch3_mogrn}
+\include{\dir/main}
 
 \cleardoublepage%
-\def\dir{chapters/conclusion_outlook}
+\def\dir{chapters/ch4_lambda}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/ch5_rhodozyme}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/ch6_protos_mcp}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/ch7_discussion}
 \include{\dir/main}
 
 \appendix

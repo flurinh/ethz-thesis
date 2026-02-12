@@ -1,0 +1,2 @@
+\ProvidesLanguage{ngermanb}[2024/01/01 v1.0 babel ngerman shim]
+\babelprovide[import=de-1996,main]{ngerman}

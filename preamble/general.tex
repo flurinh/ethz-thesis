@@ -69,6 +69,24 @@
 \usepackage{subcaption}
 \captionsetup[sub]{margin=0pt,font=small,labelfont={rm}}
 
+% Code listings
+\usepackage{listings}
+\lstset{%
+  basicstyle=\small\ttfamily,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape\color{gray},
+  stringstyle=\color{BrickRed},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  framesep=3pt,
+  xleftmargin=3pt,
+  xrightmargin=3pt,
+  aboveskip=1em,
+  belowskip=1em,
+  captionpos=b,
+}
+
 % Blind text
 \usepackage{blindtext}
 
@@ -192,9 +210,7 @@
 \usepackage{siunitx}
 \sisetup{
   separate-uncertainty,
-  repeatunits=false,
   detect-family,
-  unit-mode=text,
 }
 \DeclareSIUnit\au{a.u.}
 \let\u=\SI%

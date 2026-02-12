@@ -1,0 +1,50 @@
+\chapter{Discussion}
+\label{ch:discussion}
+
+The introduction identified three gaps: microbial rhodopsins lacked the standardized positional annotation that enabled systematic GPCR comparison, no method predicted spectral properties across the type~I and type~II divide, and existing tools did not compose into workflows linking sequences, structures, and functional properties while maintaining consistent identity. Each gap required a different solution. Together, those solutions form a system.
+
+
+\section{Contributions}
+\label{sec:discussion-contributions}
+
+LAMBDA is the central contribution. It predicts spectral properties across both opsin superfamilies---the first model to treat color tuning as a problem of binding pocket geometry rather than family-specific sequence features. Trained on 2,054\worktodo{CRITICAL consistency: training set size is 2,054 here but 2,120 in \autoref{ch:lambda} and \autoref{ch:introduction}. MAE values also differ: \SI{4.08}{\nano\metre} / \SI{6.27}{\nano\metre} here vs.\ \SI{5.18}{\nano\metre} / \SI{6.86}{\nano\metre} in \autoref{ch:lambda}. ``over 40,000'' should be 47,700 to match \autoref{ch:lambda}. These numbers must be reconciled across all chapters.} sequences spanning type~I, type~II, and the lipocalin fold hCRBPII, LAMBDA achieves \SI{4.08}{\nano\metre} mean absolute error on type~II opsins and \SI{6.27}{\nano\metre} on type~I. The Opsin Atlas extends these predictions to over 40,000 sequences.
+
+LAMBDA works because of MOGRN. Type~I and type~II opsins diverged billions of years ago and share no detectable sequence similarity outside the binding pocket. A model that takes raw sequence as input cannot learn from both. MOGRN provides the shared vocabulary: a structure-based numbering system for microbial rhodopsins anchored to the Schiff base lysine, analogous to what Ballesteros--Weinstein provides for GPCRs. With both families mapped to standardized coordinates, LAMBDA can represent any opsin binding pocket as a graph aligned on retinal, regardless of fold.
+
+ProtOS made this feasible at scale. Routing 40,000 sequences through GRN annotation, embedding generation, graph construction, and spectral prediction requires managing data across formats and processors without manual intervention. ProtOS handles this through a processor architecture that links sequences, structures, embeddings, properties, and annotations under persistent entity identity. The Opsin Atlas exists because ProtOS could execute the full pipeline for every sequence in the dataset without custom scripting per step.
+
+ProtOS-MCP completes the stack by removing the programming requirement. The same processors that powered the Opsin Atlas are accessible through natural language. \autoref{ch:protos-mcp} demonstrated this on the rhodozyme: a multi-step spectral engineering workflow---sequence registration, GRN annotation, binding pocket comparison, mutant library creation, LAMBDA screening---ran through four conversational turns, 20 tool calls, no code written.
+
+The deeper principle is that standardized coordinates enable cross-family learning. This is not specific to opsins. Any protein superfamily where a conserved functional site spans divergent folds could benefit from the same approach: define a coordinate system anchored to the functional site, represent the site as a graph, and train a model across families that would otherwise be treated separately.
+
+
+\section{Limitations}
+\label{sec:discussion-limitations}
+
+LAMBDA has not been experimentally validated. The Opsin Atlas contains 40,000 predictions, but predictions are not measurements. Model accuracy was evaluated against published spectral data, not against prospective characterization of novel sequences. Until atlas candidates are tested in the lab, LAMBDA remains a computational screening tool. Additionally, accuracy degrades for deeply red-shifted opsins where training data is sparse---the physics of spectral tuning at long wavelengths remains difficult for any sequence-based approach.
+
+MOGRN depends on a conserved structural anchor: the retinal-binding pocket. Microbial rhodopsins share this feature despite extensive sequence divergence. Other protein families may lack such an obvious invariant. The GRN Processor architecture accommodates new numbering systems, but defining them---identifying the right anchor, validating across structures, ensuring coverage of functional diversity---remains manual, expert-driven work.
+
+ProtOS-MCP depends on language model reasoning. For single-tool operations---loading a structure, running a prediction---it works reliably. For complex multi-step workflows, the model must chain tool calls with dependencies: annotations must complete before positions can be queried, which must complete before mutants can be designed. Errors in one step propagate. The workflow dataset in the Supplementary Materials provides a benchmark for measuring reliability, but it does not guarantee it.
+
+More broadly, tools reduce barriers but do not replace judgment. A researcher using ProtOS-MCP can run analyses they could not run before. Interpreting the results still requires understanding the biology.
+
+
+\section{Future Work}
+\label{sec:discussion-future}
+
+Experimental validation of LAMBDA is the most impactful next step. Characterizing even a small subset of Opsin Atlas candidates---selected for maximal predicted spectral diversity---would test whether the model captures real spectral tuning physics or has learned correlations that do not generalize to uncharacterized sequences. Positive results would transform LAMBDA from a screening tool into a framework for understanding color tuning. Negative results would identify where the model fails and guide retraining.
+
+For optogenetics, the atlas identifies specific design targets: red-shifted opsins for deeper tissue penetration, spectrally separated pairs for multiplexed control, and sequences with large dark-to-activated spectral separation for bistable tools. The rhodozyme concept from \autoref{ch:rhodozyme}---coupling light activation to enzymatic function---extends this further. Color-tuned rhodozymes, each responding to a different wavelength, would enable sequential catalysis triggered by different colors of light. These remain computational designs, but the infrastructure to iterate on them exists.
+
+ProtOS is positioned to integrate the next generation of protein AI models as they arrive. RFdiffusion2, Boltz, and LigandMPNN are already accessible through the Model Manager. As these models mature and new ones emerge, the processor architecture and MCP interface remain stable---new capabilities become available through conversation without requiring users to learn new APIs.
+
+
+\section{Conclusion}
+\label{sec:discussion-conclusion}
+
+This thesis started with a question about spectral tuning and ended with infrastructure for asking questions about proteins. The path was not planned. MOGRN was built because LAMBDA needed a shared coordinate system. ProtOS was built because LAMBDA needed to process 40,000 sequences without drowning in glue code. ProtOS-MCP was built because I got tired of writing the same data loading and annotation scripts for every new analysis---and because the same interface that saved me time also makes these tools accessible to experimentalists who have never written code.
+
+The introduction framed three gaps: no standardized positions for microbial rhodopsins, no cross-family spectral prediction, no composable multi-modal protein data management. MOGRN, LAMBDA, and ProtOS address them respectively. The underlying principle---that standardized structural coordinates enable learning across evolutionary divides---is the scientific contribution. The practical contribution is that a researcher can now go from a protein sequence to a spectral prediction through a conversation.
+
+What remains is validation. The Opsin Atlas is a collection of hypotheses. Testing them is the next step---and the most exciting one.

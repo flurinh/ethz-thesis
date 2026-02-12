@@ -1,4 +1,235 @@
-\chapter{Appendix}
+\chapter{Supplementary Materials}
 \label{ch:appendix}
 
-Here be dragons.
+This supplementary chapter provides reference materials supporting the main text. These include the complete ProtOS-MCP tool catalog, workflow benchmark specifications, and technical details that would interrupt the narrative flow of earlier chapters.
+
+
+\section{ProtOS-MCP Tool Catalog}
+\label{sec:appendix-tool-catalog}
+
+The following tables list all tools exposed through the ProtOS-MCP interface, organized by functional category. Each tool includes its name, required parameters, and a brief description of its function.
+
+
+\subsection{Loader Tools}
+
+\begin{table}[htb]
+  \caption{ProtOS-MCP loader tools.}
+  \label{tab:mcp-loader-tools}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Tool Name & Parameters & Description \\
+    \midrule
+    \texttt{structure\_load} & \texttt{pdb\_id} & Download and load a structure from PDB or AlphaFold \\
+    \texttt{structure\_load\_batch} & \texttt{pdb\_ids}, \texttt{dataset\_name} & Download multiple structures \\
+    \texttt{structure\_load\_file} & \texttt{file\_path} & Load a structure from a local file \\
+    \texttt{sequence\_load} & \texttt{uniprot\_id} & Retrieve a sequence from UniProt \\
+    \texttt{sequence\_load\_batch} & \texttt{uniprot\_ids}, \texttt{dataset\_name} & Retrieve multiple sequences \\
+    \texttt{sequence\_load\_file} & \texttt{file\_path} & Load sequences from a local FASTA file \\
+    \texttt{molecule\_load\_from\_ccd} & \texttt{ccd\_id} & Load a molecule from the Chemical Component Dictionary \\
+    \texttt{molecule\_load\_from\_structure} & \texttt{structure\_id}, \texttt{ligand\_id} & Extract a ligand from a loaded structure \\
+    \texttt{molecule\_load\_file} & \texttt{file\_path} & Load a molecule from a local SDF or MOL2 file \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\subsection{Entity and Dataset Tools}
+
+\begin{table}[htb]
+  \caption{ProtOS-MCP entity and dataset tools.}
+  \label{tab:mcp-entity-tools}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Tool Name & Parameters & Description \\
+    \midrule
+    \texttt{entity\_register} & \texttt{entity\_id}, \texttt{entity\_type}, \texttt{data} & Register a new entity \\
+    \texttt{entity\_lookup} & \texttt{query} & Find an entity by ID, alias, or partial match \\
+    \texttt{entity\_list} & \texttt{entity\_type} & List all registered entities of a given type \\
+    \texttt{entity\_get\_metadata} & \texttt{entity\_id} & Retrieve metadata for a registered entity \\
+    \texttt{dataset\_create} & \texttt{name}, \texttt{entity\_ids} & Create a new dataset from existing entities \\
+    \texttt{dataset\_add} & \texttt{dataset\_name}, \texttt{entity\_ids} & Add entities to an existing dataset \\
+    \texttt{dataset\_remove} & \texttt{dataset\_name}, \texttt{entity\_ids} & Remove entities from a dataset \\
+    \texttt{dataset\_list} & \texttt{entity\_type} & List all datasets of a given type \\
+    \texttt{dataset\_get\_members} & \texttt{dataset\_name} & Get all entity IDs in a dataset \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\subsection{Structure Tools}
+
+\begin{table}[htb]
+  \caption{ProtOS-MCP structure analysis tools.}
+  \label{tab:mcp-structure-tools}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Tool Name & Parameters & Description \\
+    \midrule
+    \texttt{structure\_summarize} & \texttt{structure\_id} & Summarize structure contents \\
+    \texttt{structure\_summarize\_ligands} & \texttt{structure\_id} & Identify and describe all ligands \\
+    \texttt{structure\_get\_chains} & \texttt{structure\_id} & List all chains with types and lengths \\
+    \texttt{structure\_get\_sequence} & \texttt{structure\_id}, \texttt{chain\_id} & Extract amino acid sequence \\
+    \texttt{structure\_get\_metadata} & \texttt{structure\_id} & Get experimental metadata \\
+    \texttt{structure\_filter\_chain} & \texttt{structure\_id}, \texttt{chain\_ids} & Extract specified chains \\
+    \texttt{structure\_filter\_residues} & \texttt{structure\_id}, \texttt{start}, \texttt{end} & Extract a residue range \\
+    \texttt{structure\_find\_contacts} & \texttt{structure\_id}, \texttt{chain\_a}, \texttt{chain\_b} & Find residue contacts \\
+    \texttt{structure\_align} & \texttt{mobile\_id}, \texttt{reference\_id} & Superimpose structures \\
+    \texttt{structure\_calculate\_rmsd} & \texttt{structure\_id\_1}, \texttt{structure\_id\_2} & Calculate RMSD \\
+    \texttt{structure\_export} & \texttt{structure\_id}, \texttt{format} & Export structure to file \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\subsection{Sequence Tools}
+
+\begin{table}[htb]
+  \caption{ProtOS-MCP sequence analysis tools.}
+  \label{tab:mcp-sequence-tools}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Tool Name & Parameters & Description \\
+    \midrule
+    \texttt{sequence\_get} & \texttt{sequence\_id} & Retrieve a loaded sequence \\
+    \texttt{sequence\_extract\_from\_structure} & \texttt{structure\_id}, \texttt{chain\_id} & Extract sequence from structure \\
+    \texttt{sequence\_align\_pairwise} & \texttt{query\_id}, \texttt{target\_id} & Align two sequences \\
+    \texttt{sequence\_align\_multiple} & \texttt{dataset\_name} & Perform multiple sequence alignment \\
+    \texttt{sequence\_search} & \texttt{query}, \texttt{database} & Search for homologs \\
+    \texttt{sequence\_cluster} & \texttt{dataset\_name}, \texttt{identity\_threshold} & Cluster sequences by identity \\
+    \texttt{sequence\_export} & \texttt{sequence\_id}, \texttt{output\_path} & Export sequence to FASTA \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\subsection{GRN Tools}
+
+\begin{table}[htb]
+  \caption{ProtOS-MCP generic residue numbering tools.}
+  \label{tab:mcp-grn-tools}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Tool Name & Parameters & Description \\
+    \midrule
+    \texttt{grn\_load\_reference} & \texttt{family} & Load a GRN reference system \\
+    \texttt{grn\_list\_references} & -- & List all available GRN references \\
+    \texttt{grn\_annotate\_sequence} & \texttt{sequence\_id}, \texttt{reference} & Annotate sequence with GRN \\
+    \texttt{grn\_annotate\_structure} & \texttt{structure\_id}, \texttt{chain\_id} & Annotate structure with GRN \\
+    \texttt{grn\_annotate\_dataset} & \texttt{dataset\_name}, \texttt{reference} & Annotate all sequences in a dataset \\
+    \texttt{grn\_get\_position} & \texttt{sequence\_id}, \texttt{position} & Get residue at a GRN position \\
+    \texttt{grn\_compare\_positions} & \texttt{position}, \texttt{sequence\_ids} & Compare residues across sequences \\
+    \texttt{grn\_get\_annotation\_table} & \texttt{table\_name} & Load a GRN annotation table \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\subsection{Embedding Tools}
+
+\begin{table}[htb]
+  \caption{ProtOS-MCP embedding tools.}
+  \label{tab:mcp-embedding-tools}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Tool Name & Parameters & Description \\
+    \midrule
+    \texttt{embedding\_list\_models} & -- & List available embedding models \\
+    \texttt{embedding\_compute} & \texttt{sequence\_ids}, \texttt{model\_name} & Compute embeddings \\
+    \texttt{embedding\_compute\_dataset} & \texttt{dataset\_name}, \texttt{model\_name} & Compute for full dataset \\
+    \texttt{embedding\_load} & \texttt{entity\_ids} & Load previously computed embeddings \\
+    \texttt{embedding\_similarity} & \texttt{entity\_id\_1}, \texttt{entity\_id\_2} & Calculate cosine similarity \\
+    \texttt{embedding\_reduce\_dimensions} & \texttt{dataset\_name}, \texttt{method} & Dimensionality reduction \\
+    \texttt{embedding\_cluster} & \texttt{dataset\_name}, \texttt{method} & Cluster embeddings \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\subsection{Property and Model Tools}
+
+\begin{table}[htb]
+  \caption{ProtOS-MCP property and model tools.}
+  \label{tab:mcp-property-tools}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Tool Name & Parameters & Description \\
+    \midrule
+    \texttt{property\_create\_table} & \texttt{name}, \texttt{data} & Create a new property table \\
+    \texttt{property\_load\_table} & \texttt{table\_name} & Load an existing property table \\
+    \texttt{property\_add\_rows} & \texttt{table\_name}, \texttt{data} & Add rows to a property table \\
+    \texttt{property\_query} & \texttt{table\_name}, \texttt{filters} & Query with filters \\
+    \texttt{property\_export} & \texttt{table\_name}, \texttt{output\_path} & Export to CSV or parquet \\
+    \texttt{model\_list} & -- & List available computational models \\
+    \texttt{model\_predict\_structure} & \texttt{sequence\_id}, \texttt{model} & Predict structure from sequence \\
+    \texttt{model\_predict\_properties} & \texttt{sequence\_id}, \texttt{properties} & Predict sequence properties \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\section{Workflow Benchmark Specifications}
+\label{sec:appendix-workflow-benchmark}
+
+The ProtOS-MCP workflow collection is stratified by difficulty based on the number of tools required, the number of processors involved, and the complexity of result interpretation.
+
+\begin{table}[htb]
+  \caption{Workflow benchmark difficulty criteria.}
+  \label{tab:benchmark-difficulty}
+  \centering
+  \begin{tabularx}{\textwidth}{lllX}
+    \toprule
+    Level & Tools & Processors & Example \\
+    \midrule
+    Beginner & 1--2 & 1 & Load structure, list ligands \\
+    Intermediate & 3--5 & 2--3 & Align structures, annotate with GRN \\
+    Advanced & 5+ & 3+ & Multi-stage functional analysis \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Each benchmark workflow is evaluated on: tool selection accuracy, parameter accuracy, execution order, result interpretation, and biological accuracy.
+
+
+\section{Processor Data Storage Conventions}
+\label{sec:appendix-storage}
+
+ProtOS organizes data in a standardized directory structure. \autoref{tab:storage-conventions} describes the storage locations for each processor.
+
+\begin{table}[htb]
+  \caption{Processor data storage conventions.}
+  \label{tab:storage-conventions}
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{llX}
+    \toprule
+    Processor & Base Directory & File Formats \\
+    \midrule
+    Structure & \texttt{structure/} & \texttt{.cif}, \texttt{.pkl}, \texttt{.json} \\
+    Sequence & \texttt{sequence/} & \texttt{.fasta}, \texttt{.aln}, \texttt{.mmseqs} \\
+    GRN & \texttt{grn/} & \texttt{.yaml}, \texttt{.parquet} \\
+    Embedding & \texttt{embedding/} & \texttt{.npy}, \texttt{.h5} \\
+    Property & \texttt{property/} & \texttt{.parquet}, \texttt{.csv} \\
+    Molecule & \texttt{molecule/} & \texttt{.sdf}, \texttt{.mol2}, \texttt{.json} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+\section{Entity Registry Schema}
+\label{sec:appendix-registry}
+
+The entity registry maintains consistent identity across all processors. Each entity record contains: a primary identifier (\texttt{id}), entity type, alternative identifiers (aliases), creation and modification timestamps, data source, type-specific metadata, dataset memberships, and relations to other entities.

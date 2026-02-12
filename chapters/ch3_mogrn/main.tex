@@ -1,0 +1,54 @@
+\chapter{MOGRN --- A Generic Residue Numbering System for Microbial Rhodopsins}
+\label{ch:mogrn}
+
+\chapterabstract{This chapter summarizes the research contribution presented in the accompanying publication: ``A Generic Residue-Numbering System for Microbial Rhodopsins --- Unifying Structural Frameworks and Functional Mapping.'' I am a co-first author on this work. The full manuscript is appended to this thesis.}
+
+
+\section{Introduction}
+\label{sec:mogrn-introduction}
+
+The Ballesteros--Weinstein numbering system gave the GPCR field a shared vocabulary. Position~3.50 refers to the same structural location in any Class~A receptor, regardless of sequence length or insertion history. GPCRdb built on this foundation to integrate sequences, structures, ligands, and mutations into a unified resource\cite{kooistra2021}. When a researcher reports that a mutation at position~3.32 affects ligand binding, every GPCR researcher knows where that position is. Microbial rhodopsins---the type~I opsins central to this thesis---lacked an equivalent system.
+
+The absence was not for lack of need. Microbial rhodopsins span proton pumps, chloride pumps, sodium pumps, cation and anion channels, sensory rhodopsins, and enzyme-fused variants distributed across archaea, bacteria, eukaryotes, and viruses. Comparing equivalent positions across these families is essential for understanding function, yet laboratories developed ad~hoc conventions---some referenced bacteriorhodopsin numbering, others channelrhodopsin-2 or the C1C2 chimera---and recognizing equivalent positions across publications required manual structural alignment for every analysis. The underlying difficulty is sequence divergence: identity between major classes falls as low as 10--12\%\cite{degrip2022}, well below the threshold for reliable sequence alignment. A numbering system for microbial rhodopsins must therefore be anchored to structure rather than sequence.
+
+We developed MOGRN (Microbial Opsin Generic Residue Numbering), a structure-based system anchored to the one feature all microbial rhodopsins share: the retinal-binding pocket. The system was validated on 129 structures spanning all major functional classes and applied to approximately 40,000 sequences. This chapter summarizes its key elements; the full methodology, results, and discussion are presented in the appended publication.
+
+
+\section{Summary}
+\label{sec:mogrn-summary}
+
+MOGRN follows the Ballesteros--Weinstein convention: each position receives a two-part identifier indicating the helix (1--7) and the position relative to a helix-specific anchor. The anchor on each helix is the residue closest to retinal, designated X.50. The Schiff base-forming lysine on helix~7 becomes position~7.50 by definition. Positions toward the N-terminus receive lower numbers; positions toward the C-terminus receive higher numbers. This ligand-centric definition ensures that the anchors fall within the most conserved region of each helix---the retinal-binding pocket---providing a stable reference even across distantly related families.
+
+\autoref{fig:mogrn-1c3w} illustrates the system on bacteriorhodopsin (PDB: 1C3W). The key functional positions include the Schiff base lysine K216 at position~7.50, the counterions D85 (3.45) and D212 (7.46), and residues of the TM3 motif that determines ion pump specificity. These positions, traditionally referenced by protein-specific residue numbers, become directly comparable across the superfamily in MOGRN coordinates.
+
+\begin{figure}[tb]
+  \centering
+  % \includegraphics[width=0.8\textwidth]{\dir/figure_3_1.pdf}
+  \caption[Key MOGRN positions on bacteriorhodopsin]{%
+    Bacteriorhodopsin (PDB: 1C3W) with key MOGRN positions highlighted. The Schiff base lysine K216 (7.50), counterions D85 (3.45) and D212 (7.46), and TM3 motif residues T89 (3.49) and D96 (3.56) are shown as sticks. Retinal in rust.}
+  \label{fig:mogrn-1c3w}
+\end{figure}
+
+The TM3 motif at positions 3.45--3.49--3.56 encodes functional identity across ion-pumping rhodopsins (\autoref{tab:tm3-motif}). Outward proton pumps carry DTD (aspartate--threonine--aspartate), inward proton pumps carry FSE or DTA, chloride pumps carry TSA or NTQ, and sodium pumps carry NDQ. These motifs, which required manual structural alignment before MOGRN, become queryable signatures in standardized coordinates. Additional functional positions include spectral tuning switches at 3.53, 4.51, 6.54, and~7.49, the retinal planarity determinant at 4.54 (the non-G rule), and lateral fenestration sites at 5.44 and~5.47.
+
+\begin{table}[tb]
+  \caption[TM3 motif across microbial rhodopsin functional classes]{TM3 motif at positions 3.45--3.49--3.56 across microbial rhodopsin functional classes.}
+  \label{tab:tm3-motif}
+  \centering
+  \begin{tabular}{lllll}
+    \toprule
+    Function & 3.45 & 3.49 & 3.56 & Example \\
+    \midrule
+    Outward H$^+$ pump & D & T & D & HsBR \\
+    Inward H$^+$ pump (SzR) & F & S & E & SzR4 \\
+    Inward H$^+$ pump (XeR) & D & T & A/L/S & NsXeR \\
+    Cl$^-$ pump (archaeal) & T & S & A/D & NpHR \\
+    Cl$^-$ pump (bacterial) & N & T & Q & NmClR \\
+    Na$^+$ pump & N & D & Q & KR2 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The system was validated against 129 structures---69 experimental and 60 computationally predicted---spanning proton pumps, chloride pumps, sodium pumps, cation and anion channels, sensory rhodopsins, and enzyme-coupled variants from archaea, bacteria, and eukaryotes. Predicted structures achieved sub-angstrom accuracy for the binding pocket (\SIrange{0.51}{0.75}{\angstrom} iRMSD), confirming that current structure prediction methods are reliable for MOGRN annotation. The system accommodates non-canonical architectures: heliorhodopsins with inverted membrane topology, enzyme-fused rhodopsins with an additional TM0 helix, and local structural distortions that produce gaps or insertions. Application to approximately 40,000 non-redundant sequences from genomic and metagenomic sources identified 31 sequence clusters---14 containing characterized rhodopsins and 17 containing only uncharacterized sequences, representing unexplored functional diversity.
+
+For this thesis, MOGRN provides the missing infrastructure. \autoref{ch:protos} described how the GRN Processor annotates type~II opsins using Ballesteros--Weinstein reference tables from GPCRdb. MOGRN provides the equivalent for type~I: the structural alignment of 129 microbial rhodopsins produces a curated reference table registered in ProtOS, enabling the same annotation workflow. With both families mapped to standardized coordinates, binding pocket graphs can carry transferable node labels across the type~I / type~II divide---the representation that \autoref{ch:lambda} uses for cross-family spectral prediction.
