@@ -5,6 +5,8 @@
 
 \pdfbookmark[1]{Manuscript: MO numbering system}{manuscript-grn}
 \chapter*{A Generic Residue-Numbering system for Microbial Rhodopsins}
+\manualmark
+\markboth{\spacedlowsmallcaps{Manuscript: MO Numbering System}}{\spacedlowsmallcaps{Manuscript: MO Numbering System}}
 
 \begin{center}
 {\small
@@ -505,21 +507,17 @@ The authors declare no competing interests.
 
 
 %-------------------------------------------------------
-\pdfbookmark[2]{Figures}{ms-grn-figures}
-\section*{Figures}
+% Figures — title and mark set on the first figure page
 %-------------------------------------------------------
 
-\includepdf[pages=1,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=1,width=\textwidth,pagecommand={\pdfbookmark[2]{Figures}{ms-grn-figures}\markboth{\spacedlowsmallcaps{Figures}}{\spacedlowsmallcaps{Figures}}}]{figures_cropped.pdf}
 \includepdf[pages=2,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
 \includepdf[pages=3,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
 \includepdf[pages=4,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
 \includepdf[pages=5,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
 \includepdf[pages=6,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
 
-\pdfbookmark[2]{Supplementary Figures}{ms-grn-suppfigures}
-\section*{Supplementary Figures}
-
-\includepdf[pages=7,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
+\includepdf[pages=7,width=\textwidth,pagecommand={\pdfbookmark[2]{Supplementary Figures}{ms-grn-suppfigures}\markboth{\spacedlowsmallcaps{Supplementary Figures}}{\spacedlowsmallcaps{Supplementary Figures}}}]{figures_cropped.pdf}
 \includepdf[pages=8,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
 \includepdf[pages=9,width=\textwidth,pagecommand={}]{figures_cropped.pdf}
 \includepdf[pages=10,width=\textwidth,pagecommand={}]{figures_cropped.pdf}

@@ -36,7 +36,7 @@ The Sequence Processor manages retrieval, registration, and the analytical opera
   \includegraphics[width=\textwidth]{\dir/code_seq_proc.jpg}
 \end{center}
 
-Building the Type~II opsin dataset required collecting sequences across all known animal opsin subfamilies. Starting from nine query sequences---one per subfamily, spanning rod opsins, cone opsins (MWS and SWS), melanopsin, neuropsin, encephalopsin, RGR, peropsin, and parapinopsin---I used iterative BLAST searches against UniProt to retrieve homologs at increasing distance thresholds. Redundancy filtering and subfamily assignment via phylogenetic placement produced a dataset of 27,639 sequences across nine subfamilies.
+Building the Type~II opsin dataset required collecting sequences across all known animal opsin subfamilies. Starting from nine query sequences---one per subfamily, spanning rod opsins, cone opsins (MWS and SWS), melanopsin, neuropsin, encephalopsin, RGR, peropsin, and parapinopsin---I used iterative BLAST searches against UniProt to retrieve homologs at increasing distance thresholds. Redundancy filtering produced a dataset of 27,639 sequences across nine subfamilies.
 
 \begin{figure}[H]
   \centering
@@ -112,7 +112,7 @@ For seven-transmembrane proteins, the Ballesteros--Weinstein convention\cite{bal
 
 Once annotated, GRN positions propagate across modalities. The Graph Processor can select nodes by GRN label rather than residue number, producing cross-family comparable graphs. The Structure Processor can annotate coordinates with positional identity. The Sequence Processor can generate mutant libraries at specific GRN positions rather than arbitrary sequence indices.
 
-Animal opsins are GPCRs, so Ballesteros--Weinstein numbering\cite{ballesteros1995} applies. The nine query opsins---rod opsin (\textit{B.~taurus}), cone MWS and cone SWS (\textit{H.~sapiens}), parapinopsin (\textit{I.~punctatus}), encephalopsin, melanopsin, neuropsin, peropsin, and RGR (all \textit{H.~sapiens})---span the evolutionary breadth of Type~II opsins. I annotated these nine sequences at 18 functionally important GRN positions to reveal which positions are conserved and which vary between subfamilies.
+Animal opsins are GPCRs, so Ballesteros--Weinstein numbering applies. The nine query opsins---rod opsin (\textit{B.~taurus}), cone MWS and cone SWS (\textit{H.~sapiens}), parapinopsin (\textit{I.~punctatus}), encephalopsin, melanopsin, neuropsin, peropsin, and RGR (all \textit{H.~sapiens})---span the evolutionary breadth of Type~II opsins. I annotated these nine sequences at 18 functionally important GRN positions to reveal which positions are conserved and which vary between subfamilies.
 
 \begin{sidewaysfigure}
   \centering
@@ -136,7 +136,7 @@ One departure stands out. Cone SWS opsin has glycine at position~2.50 instead of
 
 \autoref{fig:grn-microswitches} maps a subset of these positions onto bovine rhodopsin. The microswitches form a connected relay from the extracellular retinal-binding site through the transmembrane core to the cytoplasmic G~protein interface.
 
-Type~I opsins are not GPCRs and Ballesteros--Weinstein does not apply. MOGRN\cite{hidber2025mogrn}, described in \autoref{ch:mogrn}, fills this gap by establishing a structure-based numbering system for microbial rhodopsins anchored to the retinal-binding site. GRN positions are sparse and curated---18 positions per sequence. Dense per-residue features, capturing patterns across entire sequences, complement them.
+Type~I opsins are not GPCRs and Ballesteros--Weinstein does not apply. MOGRN\cite{hidber2026mogrn}, described in \autoref{ch:mogrn}, fills this gap by establishing a structure-based numbering system for microbial rhodopsins anchored to the retinal-binding site. GRN positions are sparse and curated---18 positions per sequence. Dense per-residue features, capturing patterns across entire sequences, complement them.
 
 
 \section{Embedding Processor}
@@ -186,7 +186,7 @@ A growing number of machine learning models serve structural biology, from struc
   \includegraphics[width=\textwidth]{\dir/code_model_manager.jpg}
 \end{center}
 
-The \texttt{prepare} call packages processor outputs into the format Boltz2\cite{wohlwend2024} expects; \texttt{run\_and\_ingest} executes the job and registers the returned structure in ProtOS. The same pattern applies to any model. Results re-enter ProtOS as properties or new data modalities, available to every processor.
+The \texttt{prepare} call packages processor outputs into the format Boltz2 expects; \texttt{run\_and\_ingest} executes the job and registers the returned structure in ProtOS. The same pattern applies to any model. Results re-enter ProtOS as properties or new data modalities, available to every processor.
 
 
 \section{Discussion}
