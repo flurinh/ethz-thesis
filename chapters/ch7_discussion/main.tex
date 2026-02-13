@@ -1,15 +1,15 @@
 \chapter{Discussion}
 \label{ch:discussion}
 
-The goal of this thesis was a unified model that predicts opsin spectral properties across protein folds. Building it required solving two problems along the way: microbial rhodopsins lacked standardized positional annotation, and no existing framework linked the sequences, structures, and measurements that the model would need at scale.
+The goal of this thesis was to create a unified model that predicts opsin spectral properties across protein folds. Building it required solving two problems along the way: microbial rhodopsins lacked standardized positional annotation, and no existing framework linked the sequences, structures, and measurements that the model would need at scale.
 
 
 \section{Contributions}
 \label{sec:discussion-contributions}
 
-LAMBDA is the central contribution. It predicts spectral properties across both opsin superfamilies---the first model to treat color tuning as a problem of binding pocket geometry rather than family-specific sequence features. Trained on 2,120 sequences spanning type~I, type~II, and the lipocalin fold hCRBPII, LAMBDA achieves \SI{5.18}{\nano\metre} mean absolute error on type~II opsins and \SI{6.86}{\nano\metre} on type~I. The Opsin Atlas extends these predictions to 47,700 sequences.
+LAMBDA is the central contribution. It predicts spectral properties across both opsin superfamilies, being the first model to treat color tuning as a problem of binding pocket geometry rather than family-specific sequence features. Trained on 2,120 sequences spanning Type~I, Type~II, and the lipocalin fold hCRBPII, LAMBDA achieves \SI{5.18}{\nano\metre} mean absolute error on Type~II opsins and \SI{6.86}{\nano\metre} on Type~I. The Opsin Atlas extends these predictions to 47,700 sequences.
 
-LAMBDA works because of MOGRN. Type~I and type~II opsins diverged billions of years ago and share no detectable sequence similarity outside the binding pocket. A model that takes raw sequence as input cannot learn from both. MOGRN provides the shared vocabulary: a structure-based numbering system for microbial rhodopsins anchored to the Schiff base lysine, analogous to what Ballesteros--Weinstein\cite{ballesteros1995} provides for GPCRs. With both families mapped to standardized coordinates, LAMBDA can represent any opsin binding pocket as a graph aligned on retinal, regardless of fold.
+LAMBDA works because of MOGRN. Type~I and Type~II opsins share no detectable sequence similarity outside the binding pocket. A model that takes raw sequence as input cannot learn from both. MOGRN provides the shared vocabulary: a structure-based numbering system for microbial rhodopsins anchored to the Schiff base lysine, analogous to what Ballesteros--Weinstein\cite{ballesteros1995} provides for GPCRs. With both families mapped to standardized coordinates, LAMBDA can represent any opsin binding pocket as a graph aligned on retinal, regardless of fold.
 
 ProtOS made this feasible at scale. Routing 47,700 sequences through the full analysis pipeline requires managing data across formats and processors without manual intervention. The Opsin Atlas exists because ProtOS could execute this pipeline for every sequence without custom scripting per step.
 
@@ -51,4 +51,4 @@ MOGRN, LAMBDA, and ProtOS each address one of the gaps framed in the introductio
 
 What remains is validation. The Opsin Atlas is a collection of hypotheses. Testing them is the next step. The same is true for protein design---the rhodozyme remains my favorite project in this thesis, and seeing those candidates tested in the lab is what I look forward to most.
 
-The code for all projects presented in this thesis is publicly available on GitHub: \href{https://github.com/flurinh/lambda}{LAMBDA}, \href{https://github.com/flurinh/mogrn}{MOGRN}, \href{https://github.com/flurinh/protos}{ProtOS}, and \href{https://github.com/flurinh/protos-mcp}{ProtOS-MCP}.
+The code for all projects presented in this thesis is publicly available on GitHub: \href{https://github.com/flurinh/lambda}{LAMBDA}, \href{https://github.com/flurinh/mogrn}{MOGRN}, \href{https://github.com/flurinh/protos}{ProtOS}, and \href{https://github.com/flurinh/Protos_MCP}{ProtOS-MCP}.

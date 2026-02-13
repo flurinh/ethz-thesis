@@ -22,7 +22,7 @@ ProtOS addresses three aspects of this problem (\autoref{fig:protos-overview}). 
   \label{fig:protos-overview}
 \end{figure}
 
-The sections that follow demonstrate each processor using Type~II opsin examples to show how data is integrated across modalities. They are not a continuous narrative---each covers a different data modality, illustrated with a minimal code snippet. These snippets showcase ProtOS as an abstraction layer: data management happens behind the scenes, and I only invoke the processors.
+The sections that follow demonstrate each processor using Type~II animal opsin examples to show how data is integrated across modalities. They are not a continuous narrative---each covers a different data modality, illustrated with a minimal code snippet. These snippets showcase ProtOS as an abstraction layer: data management happens behind the scenes, and I only invoke the processors.
 
 
 \section{Sequence Processor}
@@ -32,21 +32,23 @@ Sequence is the starting point of any protein analysis. At scale, this means man
 
 The Sequence Processor manages retrieval, registration, and the analytical operations that follow. It routes requests to UniProt or NCBI based on identifier format, downloads sequences, and registers each in ProtOS. Registered sequences become the substrate for homology search (BLAST\cite{altschul1990} against remote databases, MMseqs2\cite{steinegger2017} for local high-throughput clustering), pairwise and multiple sequence alignment through BioPython\cite{cock2009}, per-position conservation analysis, residue covariation via mutual information, and combinatorial mutant library generation at specified positions.
 
+Building the Type~II opsin dataset required collecting sequences across all known animal opsin subfamilies. Starting from nine query sequences---one per subfamily, spanning rod opsins, cone opsins (MWS and SWS), melanopsin, neuropsin, encephalopsin, RGR, peropsin, and parapinopsin---I used iterative BLAST searches against UniProt to retrieve homologs at increasing distance thresholds. Redundancy filtering produced a dataset of 27,639 sequences across nine subfamilies. As an example, the query for rod opsins is shown below.
+
 \begin{center}
   \includegraphics[width=\textwidth]{\dir/code_seq_proc.jpg}
 \end{center}
 
-Building the Type~II opsin dataset required collecting sequences across all known animal opsin subfamilies. Starting from nine query sequences---one per subfamily, spanning rod opsins, cone opsins (MWS and SWS), melanopsin, neuropsin, encephalopsin, RGR, peropsin, and parapinopsin---I used iterative BLAST searches against UniProt to retrieve homologs at increasing distance thresholds. Redundancy filtering produced a dataset of 27,639 sequences across nine subfamilies.
+\autoref{fig:opsin-diversity} shows the sequence identity distributions for the nine subfamilies. Rod opsins form a tight distribution centered around 70\% identity to the bovine rhodopsin query. Cone MWS opsins and cone SWS opsins show broader diversity, with identities extending below 40\%. Non-visual opsins---melanopsin, neuropsin, encephalopsin---form smaller clusters. Each subfamily is internally cohesive while well-separated from others, validating the classification used throughout this thesis.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{\dir/fig_opsin_diversity.jpg}
   \caption[Per-subfamily sequence identity distributions for Type~II opsins]{%
-    Per-subfamily sequence identity distributions for Type~II opsins across nine subfamilies. Each ridge shows the distribution of BLAST identity (\%) to the subfamily query sequence. Rod opsins form a tight peak near 70\%; cone SWS opsins show broader diversity extending below 40\%. Subfamily colors follow the subfamily palette used in all subsequent figures.}
+    Per-subfamily sequence identity distributions for Type~II opsins across nine subfamilies. Each ridge shows the distribution of BLAST identity (\%) to the subfamily query sequence. Rod opsins form a tight peak near 70\%; cone SWS opsins show broader diversity extending below 70\%. Subfamily colors follow the subfamily palette used in all subsequent figures.}
   \label{fig:opsin-diversity}
 \end{figure}
 
-\autoref{fig:opsin-diversity} shows the sequence identity distributions for the nine subfamilies. Rod opsins form a tight distribution centered around 70\% identity to the bovine rhodopsin query. Cone MWS opsins and cone SWS opsins show broader diversity, with identities extending below 40\%. Non-visual opsins---melanopsin, neuropsin, encephalopsin---form smaller clusters. Each subfamily is internally cohesive while well-separated from others, validating the classification used throughout this thesis.
+
 
 These 27,639 sequences are now registered in ProtOS. Each carries its accession, subfamily assignment, and species---and each is available to every subsequent processor. But sequence identity alone does not reveal how binding pocket residues are arranged in three-dimensional space---and it is this spatial arrangement that determines spectral properties.
 
@@ -56,13 +58,15 @@ These 27,639 sequences are now registered in ProtOS. Each carries its accession,
 
 Binding pocket analysis requires knowing where residues sit relative to the chromophore---which residues are in contact, at what distance, and with what geometry. This information lives in coordinate files: experimental structures from the PDB\cite{berman2000} and predicted structures from AlphaFold~DB\cite{jumper2021,varadi2022}. Structural data is sparse---the PDB holds roughly 200,000 experimental structures for hundreds of millions of known sequences---and predicted structures lack ligands, waters, and ions that define a binding site. The coordinate files themselves, in PDB and mmCIF formats, must be parsed into representations where spatial relationships become queryable.
 
-The Structure Processor parses coordinate files into queryable representations where atoms, residues, and their contacts are programmatically accessible. Each structure is registered in ProtOS. Relationships to sequences arise explicitly---when a sequence is extracted from a structure, or when Boltz2 predicts a structure from a sequence, the provenance is recorded. The processor identifies ligand contacts (including water-mediated and ion-mediated contacts), filters structures by chain or residue range, applies coordinate transformations and Kabsch superpositions\cite{kabsch1976}, and merges multiple structures into multi-chain complexes.
+The Structure Processor parses coordinate files into queryable representations where atoms, residues, and their contacts are programmatically accessible. Each structure is registered in ProtOS. Relationships to sequences arise explicitly---when a sequence is extracted from a structure, or when Boltz2 predicts a structure from a sequence, the provenance is recorded. The processor identifies ligand contacts (including water-mediated and ion-mediated contacts), filters structures by chain or residue range, applies coordinate transformations and performs Kabsch structural superpositions\cite{kabsch1976}, and merges multiple structures into multi-chain complexes.
+
+Bacteriorhodopsin (PDB 1C3W\cite{luecke1999}, Type~I) and bovine rhodopsin (PDB 1U19\cite{okada2004}, Type~II) are used to illustrate a structural comparison workflow. 
 
 \begin{center}
   \includegraphics[width=\textwidth]{\dir/code_struct_proc.jpg}
 \end{center}
 
-Bacteriorhodopsin (PDB 1C3W\cite{luecke1999}, Type~I) and bovine rhodopsin (PDB 1U19\cite{okada2004}, Type~II) illustrate what structural comparison reveals. Extracting residues within \SI{4}{\angstrom} of retinal yields approximately 20 pocket residues in each case. Both pockets span helices~3 through~7, with the counterion (D85 in bacteriorhodopsin, E113 in bovine rhodopsin) positioned to stabilize the protonated Schiff base\cite{kandori2020}. Kabsch alignment on retinal atoms places the two chromophores in the same frame: the pockets overlap around the Schiff base and counterion and diverge elsewhere. Global structural alignment fails because the helix topologies differ; alignment on the ligand succeeds because both proteins face the same physical constraint---binding retinal in a manner that permits isomerization and spectral tuning.
+Extracting residues within \SI{4}{\angstrom} of retinal yields approximately 20 binding pocket residues in each case  (\autoref{fig:br-bovine-aligned}). Both pockets span helices~3 through~7, with the counterion (D85 in bacteriorhodopsin, E113 in bovine rhodopsin) positioned to stabilize the protonated Schiff base\cite{kandori2020}. Kabsch structural alignment on retinal atoms places the two chromophores in the same frame: the pockets overlap around the Schiff base and counterion and diverge elsewhere. In this case, a global structural alignment fails because the helix topologies differ; but alignment on the ligand succeeds because both proteins face the same physical constraint---binding retinal in a manner that permits isomerization and spectral tuning.
 
 \begin{figure}[H]
   \centering
@@ -72,15 +76,15 @@ Bacteriorhodopsin (PDB 1C3W\cite{luecke1999}, Type~I) and bovine rhodopsin (PDB 
   \label{fig:br-bovine-aligned}
 \end{figure}
 
-Both structures are now in ProtOS, each with extracted pocket residues and ligand contacts. The binding pocket residues form spatial contact networks---representing these as graphs makes the topology explicit and comparable.
+Both structures are now in ProtOS, each with extracted pocket residues and ligand contacts. The binding pocket residues form spatial contact networks, and representing these as graphs makes the topology explicit and comparable.
 
 
 \section{Graph Processor}
 \label{sec:protos-graph}
 
-Graphs are mathematical representations of connectivity. Nodes represent entities, edges represent relationships between them. Crucially, graphs can be constructed from either sequence or structure: if you know which positions correspond to nodes, the edges encode whatever relationship you define---sequence proximity, spatial contact, or functional coupling. Residue contact graphs formalize binding pocket topology. Nodes represent residues, edges connect pairs whose C$\alpha$ atoms fall within a distance threshold. The resulting network captures three-dimensional proximity independent of sequence numbering---directly comparable across proteins with different sequences, different folds, or no detectable homology. For machine learning, graph neural networks operate directly on nodes and edges, making pocket graphs a natural bridge between structural coordinates and predictive models.
+Graphs are mathematical representations of connectivity. Nodes represent entities and edges between nodes represent relationships. Crucially, graphs can be constructed from either sequence or structure: if one knows which positions correspond to nodes, the edges encode whatever relationship one defines, such as sequence proximity, spatial contact, or functional coupling. Residue contact graphs formalize binding pocket topology. Nodes represent residues and edges connect pairs whose C$\alpha$ atoms fall within a distance threshold. The resulting network captures three-dimensional proximity independent of sequence numbering and is directly comparable across proteins with different sequences, different folds, or no detectable homology. For machine learning, graph neural networks operate directly on nodes and edges, making pocket graphs a natural bridge between structural coordinates and predictive models.
 
-The Graph Processor generates these graphs from any structure already in ProtOS, optionally restricting to residues near a specified ligand to isolate binding pockets or active sites. The resulting graph is stored and linked to its source structure. Graphs can be generated at atom or residue level, individually or in batch across an entire structure dataset. Nodes can be selected by GRN position rather than residue number, producing graphs where every node carries a transferable label---comparable across proteins regardless of sequence numbering. Conversion to PyTorch Geometric\cite{fey2019} tensors is built in, so that a pocket graph extracted here becomes a direct input to a graph neural network.
+The Graph Processor generates these graphs from any structure already in ProtOS, optionally restricting to residues near a specified ligand to isolate binding pockets or active sites. The resulting graph is stored and linked to its source structure. Graphs can be generated at atom or residue level, individually or in batch across an entire structure dataset. Nodes can be selected by generic residue numbers rather than protein residue numbers, producing graphs where every node carries a transferable label comparable across proteins regardless of sequence numbering. Conversion to PyTorch Geometric\cite{fey2019} tensors is built in, so that a pocket graph extracted here becomes a direct input to a graph neural network.
 
 \begin{center}
   \includegraphics[width=\textwidth]{\dir/code_graph_proc.jpg}
@@ -100,7 +104,7 @@ Graphs built from structures require coordinates. But if every node can be label
 \section{GRN Processor}
 \label{sec:protos-grn}
 
-Generic Residue Numbering (GRN) annotates sequences with positional labels that refer to the protein fold rather than the raw sequence index. For any sequence, if you know which positions carry which GRN labels, you can compare sequences not as mere alignments but as mappings onto the shared fold. The GRN Processor is, in essence, a fold-aware positional annotation system for sequences.
+Generic Residue Numbering (GRN) annotates sequences with positional labels that refer to the protein fold rather than the raw sequence index. For any sequence, if one knows which positions carry which GRN labels, one can compare sequences not as mere alignments but as mappings onto the shared fold. The GRN Processor is, in essence, a fold-aware positional annotation system for sequences.
 
 For seven-transmembrane proteins, the Ballesteros--Weinstein convention\cite{ballesteros1995} defines the coordinate system: each helix is numbered 1 through~7, with the most conserved residue on each helix designated X.50. Position~3.50 is the anchor on helix~3; positions~3.49 and~3.51 are its immediate neighbors. GRN position~3.28 refers to the same structural location in any GPCR, regardless of sequence length or insertion history. Databases like GPCRdb\cite{kooistra2021} maintain curated reference tables that map sequence positions to these coordinates. The GRN Processor manages these reference tables and annotates query sequences by aligning them to the references---no structure is needed for the query itself.
 
@@ -110,7 +114,7 @@ For seven-transmembrane proteins, the Ballesteros--Weinstein convention\cite{bal
 
 Once annotated, GRN positions propagate across modalities. The Graph Processor can select nodes by GRN label rather than residue number, producing cross-family comparable graphs. The Structure Processor can annotate coordinates with positional identity. The Sequence Processor can generate mutant libraries at specific GRN positions rather than arbitrary sequence indices.
 
-Animal opsins are GPCRs, so Ballesteros--Weinstein numbering applies. The nine query opsins---rod opsin (\textit{B.~taurus}), cone MWS and cone SWS (\textit{H.~sapiens}), parapinopsin (\textit{I.~punctatus}), encephalopsin, melanopsin, neuropsin, peropsin, and RGR (all \textit{H.~sapiens})---span the evolutionary breadth of Type~II opsins. I annotated these nine sequences at 18 functionally important GRN positions to reveal which positions are conserved and which vary between subfamilies.
+Animal opsins are GPCRs, so Ballesteros--Weinstein numbering applies. The nine query opsins of \autoref{fig:opsin-diversity} ---rod opsin (\textit{B.~taurus}), cone MWS and cone SWS (\textit{H.~sapiens}), parapinopsin (\textit{I.~punctatus}), encephalopsin, melanopsin, neuropsin, peropsin, and RGR (all \textit{H.~sapiens})---span the evolutionary breadth of Type~II opsins. I annotated these nine sequences at 18 functionally important GRN positions to reveal which positions are conserved and which vary between subfamilies. \autoref{fig:grn-alignment} shows the resulting alignment table. 
 
 \begin{sidewaysfigure}
   \centering
@@ -120,9 +124,11 @@ Animal opsins are GPCRs, so Ballesteros--Weinstein numbering applies. The nine q
   \label{fig:grn-alignment}
 \end{sidewaysfigure}
 
-\autoref{fig:grn-alignment} shows the resulting alignment table. A researcher familiar with this notation can immediately identify which structural position is being discussed and relate it to any other GPCR---this shared vocabulary is what makes the analysis transferable. The 18 positions fall into three functional categories\cite{venkatakrishnan2013}. Conserved anchors maintain the helical scaffold: N at~1.50 and D at~2.50 coordinate a water-mediated hydrogen bond network between TM1 and TM2, while W at~4.50 stabilizes the helix bundle. Spectral tuning sites surround the chromophore: position~3.28 is the counterion (E in visual opsins, shifting to D or other residues in non-visual subfamilies), and position~3.32 varies between A, S, and T---small residues with different hydrogen-bonding capabilities that modulate the electrostatic environment around retinal. Activation microswitches\cite{katritch2013} form the signal transduction relay: E/DRY at~3.49--3.51 (ionic lock), PIF at~3.40, 5.50, and~6.44 (inter-helix connector), CWxP at~6.47--6.50 (TM6 toggle switch), NPxxY at~7.49--7.53 (G~protein coupling), and the Schiff base lysine at~7.43---absolutely conserved because every opsin requires it to bind retinal.
+A researcher familiar with this notation can immediately identify which structural position is being discussed and relate it to any other GPCR: this shared vocabulary is what makes the analysis transferable. The 18 positions fall into three functional categories\cite{venkatakrishnan2013}. Conserved anchors maintain the helical scaffold: N at~1.50 and D at~2.50 coordinate a water-mediated hydrogen bond network between TM1 and TM2, while W at~4.50 stabilizes the helix bundle. Spectral tuning sites surround the chromophore: position~3.28 is the counterion (E in visual opsins, shifting to D or other residues in non-visual subfamilies), and position~3.32 varies between A, S, and T---small residues with different hydrogen-bonding capabilities that modulate the electrostatic environment around retinal. Activation microswitches\cite{katritch2013} form the signal transduction relay: E/DRY at~3.49--3.51 (ionic lock), PIF at~3.40, 5.50, and~6.44 (inter-helix connector), CWxP at~6.47--6.50 (TM6 toggle switch), NPxxY at~7.49--7.53 (G~protein coupling), and the Schiff base lysine at~7.43---absolutely conserved because every opsin requires it to bind retinal.
 
-One departure stands out. Cone SWS opsin has glycine at position~2.50 instead of the canonical aspartate. This is confirmed across 3,237 SWS1 subfamily members in the dataset (52\%~G, 38\%~N, 8\%~D), indicating evolutionary loss of the sodium coordination site in this UV/blue-sensitive lineage---consistent with the known absence of sodium sensitivity in short-wavelength opsins.
+One difference stands out. Cone SWS opsin have glycine at position~2.50 instead of the canonical aspartate. This is confirmed across 3,237 SWS1 subfamily members in the dataset (52\%~G, 38\%~N, 8\%~D), suggesting an evolutionary loss of the sodium coordination site in this UV/blue-sensitive lineage, consistent with the known absence of sodium sensitivity in short-wavelength opsins.
+
+\autoref{fig:grn-microswitches} maps a subset of these positions onto bovine rhodopsin. The microswitches form a connected relay from the extracellular retinal-binding site through the transmembrane core to the cytoplasmic G~protein interface.
 
 \begin{figure}[H]
   \centering
@@ -132,9 +138,9 @@ One departure stands out. Cone SWS opsin has glycine at position~2.50 instead of
   \label{fig:grn-microswitches}
 \end{figure}
 
-\autoref{fig:grn-microswitches} maps a subset of these positions onto bovine rhodopsin. The microswitches form a connected relay from the extracellular retinal-binding site through the transmembrane core to the cytoplasmic G~protein interface.
+Type~I opsins, however, are not GPCRs and thus the Ballesteros--Weinstein system does not apply. MOGRN\cite{hidber2026mogrn}, described in \autoref{ch:mogrn}, fills this gap by establishing a structure-based numbering system for microbial rhodopsins anchored to the retinal-binding site. 
 
-Type~I opsins are not GPCRs and Ballesteros--Weinstein does not apply. MOGRN\cite{hidber2026mogrn}, described in \autoref{ch:mogrn}, fills this gap by establishing a structure-based numbering system for microbial rhodopsins anchored to the retinal-binding site. GRN positions are sparse and curated---18 positions per sequence. Dense per-residue features, capturing patterns across entire sequences, complement them.
+GRN positions are sparse and curated---18 positions per sequence in this example. They can be complemented with dense per-residue features, capturing patterns across entire sequences.
 
 
 \section{Embedding Processor}
@@ -148,6 +154,8 @@ Protein language models (pLMs) such as ESM-2\cite{lin2023} and Ankh\cite{elnagga
 
 Ankh Large produces a 1536-dimensional vector for each residue in the sequence---for a 300-residue protein, a matrix of $300 \times 1536$. Averaging across residues yields a single 1536-dimensional vector summarizing the whole protein. The per-residue matrix provides node features on contact graphs, where each node gets its own embedding. The mean-pooled vector enables similarity searches and clustering across the full dataset. The Embedding Processor supports ESM-2 and Ankh model families across multiple dimensionalities, with per-residue and mean-pooled embedding types.
 
+I embedded all 27,639 sequences with Ankh Large. Mean-pooling across sequence length yields one vector per protein. UMAP\cite{mcinnes2018} projection into two dimensions (\autoref{fig:atlas-umap}) reveals the structure of opsin embedding space without supervision---the model received no subfamily labels, spectral measurements, or structural information during training.
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{\dir/fig_atlas_umap.jpg}
@@ -156,11 +164,9 @@ Ankh Large produces a 1536-dimensional vector for each residue in the sequence--
   \label{fig:atlas-umap}
 \end{figure}
 
-I embedded all 27,639 sequences with Ankh Large. Mean-pooling across sequence length yields one vector per protein. UMAP\cite{mcinnes2018} projection into two dimensions (\autoref{fig:atlas-umap}) reveals the structure of opsin embedding space without supervision---the model received no subfamily labels, spectral measurements, or structural information during training.
-
 Subfamilies cluster: proteins within a subfamily produce more similar embeddings than proteins across subfamilies, confirming that the learned representations capture functional groupings. The nine query sequences, marked as stars, sit within their respective subfamily clouds.
 
-At this point, ProtOS has demonstrated capabilities for handling sequences, structures, graphs, GRN annotations, and embeddings. Since ProtOS is an integrated system, a protein annotated with all of these links them: GRN positions map a sequence onto the fold, enabling construction of a binding pocket graph from sequence alone, and embeddings enrich each node with learned per-residue features. What remains is linking these to the measurements that describe each protein's biology.
+At this point, ProtOS has demonstrated capabilities for handling sequences, structures, graphs, GRN annotations, and embeddings. Since ProtOS is an integrated system, it links all these components: GRN positions map a protein sequence onto the fold, enabling construction of a binding pocket graph from sequence alone, and embeddings enrich each node with learned per-residue features. What remains is linking these to the experimental data that describe each protein's biology.
 
 
 \section{Property Processor}
@@ -172,13 +178,13 @@ Every protein carries associated values---numbers, labels, categories that descr
   \includegraphics[width=\textwidth]{\dir/code_prop_proc.jpg}
 \end{center}
 
-For the opsin research in this thesis, the property table links each of the 27,639 sequences to annotations such as subfamily, sequence identity to the query, sequence length, and species---but also to opsin-specific properties like measured $\lambda_\text{max}$. Approximately 1,800 opsins have published absorption spectra, assembled from decades of spectroscopy across both Type~I and Type~II families. The 27,639 sequences have embeddings and GRN annotations, but fewer than 7\% have measured absorption data. This sparse coverage---rich annotations, limited measurements---is characteristic of protein science and illustrates why linking modalities matters. With all modalities linked, the final piece is using this integrated data as input to predictive models.
+For the opsin research in this thesis, the property table links each of the 27,639 sequences to annotations such as subfamily, sequence identity to the query, sequence length, and species, but also to opsin-specific properties like measured $\lambda_\text{max}$. Approximately 2000 opsins have published absorption spectra, assembled from decades of spectroscopy across both Type~I and Type~II families. The 27,639 sequences have embeddings and GRN annotations, but fewer than 7\% have measured absorption data. This sparse coverage---rich annotations, limited measurements---is characteristic of protein science and illustrates why linking modalities matters. With all modalities linked, the final piece is using this integrated data as input to predictive models.
 
 
 \section{Model Manager}
 \label{sec:protos-model-manager}
 
-A growing number of machine learning models serve structural biology, from structure prediction to protein design. These models consume varying types of data and produce different output formats. The ProtOS Model Manager serves as an interface between ProtOS data and these models, preparing job submissions from processor outputs and ingesting results back into the system. Each model is described by its expected inputs and outputs; adding a new model requires only this specification. Models already integrated include Boltz2\cite{wohlwend2024} for structure prediction and Ankh\cite{elnaggar2023ankh} for embeddings, as introduced in the introduction.
+A growing number of machine learning models serve structural biology, from structure prediction to protein design. These models consume varying types of data and produce different output formats. The ProtOS Model Manager serves as an interface between ProtOS data and these models, preparing job submissions from processor outputs and ingesting results back into the system. Each model is described by its expected inputs and outputs; adding a new model requires only this specification. Models already integrated include Boltz2\cite{wohlwend2024} for structure prediction and Ankh\cite{elnaggar2023ankh} for embeddings, as shown in the introduction.
 
 \begin{center}
   \includegraphics[width=\textwidth]{\dir/code_model_manager.jpg}
