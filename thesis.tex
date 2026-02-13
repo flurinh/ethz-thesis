@@ -34,7 +34,7 @@
   \begin{tikzpicture}[remember picture, overlay]
     \clip (current page.south west) rectangle (current page.north east);
     \node at (current page.center) {%
-      \includegraphics[height=\paperheight]{cover/cover2.jpg}%
+      \includegraphics[width=\paperwidth]{cover/cover2.jpg}%
     };
   \end{tikzpicture}%
   \null\newpage
@@ -84,6 +84,9 @@
 \def\dir{chapters/ch7_discussion}
 \include{\dir/main}
 
+\clearpage%
+\include{frontbackmatter/manuscript_grn}
+
 \appendix
 \clearpage%
 \def\dir{chapters/appendix}
@@ -96,7 +99,6 @@
 \clearpage\include{frontbackmatter/acknowledgments}
 \clearpage\include{frontbackmatter/cv}
 \clearpage\include{frontbackmatter/publications}
-\clearpage\include{frontbackmatter/manuscript_grn}
 
 %
 % Back cover
